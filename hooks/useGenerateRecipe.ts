@@ -1,15 +1,20 @@
-// hooks/useGenerateRecipe.ts
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '@/lib/api';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { recipeService, Recipe } from "@/lib/api/services";
 
-export function useGenerateRecipe() {
+export const useGenerateRecipe = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: (ingredients: string[]) => 
-      api.post('/recipes/generate', { ingredients }),
+  return useMutation<
+    { recipe: Recipe },      // success type
+    Error,                   // error type
+    string[]                 // variables (ingredients)
+  >({
+    mutationFn: (ingredients) => recipeService.generate(ingredients),
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['recipes'] });
+      queryClient.invalidateQueries({
+        queryKey: ["recipes"],
+      });
     },
   });
-}
+};
