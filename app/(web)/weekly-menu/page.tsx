@@ -3,6 +3,7 @@ import Meals from "@/components/globals/meals";
 import Testimonials from "@/components/PageLayout/Home/Testimonials";
 import WeeklyHero from "@/components/PageLayout/WeeklyMenu/WeeklyHero";
 import { Plus } from "lucide-react";
+import TestRecipe from "@/components/TestRecipe";
 import React from "react";
 
 export default function page() {
@@ -19,6 +20,7 @@ export default function page() {
         </div>
       </div>
       <Testimonials />
+       <TestRecipe />;
       <FAQ />
     </div>
   );

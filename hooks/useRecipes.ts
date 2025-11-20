@@ -1,16 +1,13 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { recipeService, Recipe } from '@/lib/api/services';
 
-export const useRecipes = () =>
-  useQuery<Recipe[], Error>({
-    queryKey: ['recipes'],
-    queryFn: recipeService.getAll,
-  });
+export const useRecipes = () => {
+  const queryClient = useQueryClient();
 
-export const useGenerateRecipe = () => {
-  const qc = useQueryClient();
-  return useMutation({
+  return useMutation<{ recipe: Recipe }, Error, string[]>({
     mutationFn: (ingredients: string[]) => recipeService.generate(ingredients),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['recipes'] }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['recipes'] });
+    },
   });
 };

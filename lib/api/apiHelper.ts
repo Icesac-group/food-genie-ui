@@ -1,22 +1,59 @@
-// lib/api/apiHelper.ts
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
-export class ApiHelper {
-  constructor(private baseUrl: string) {}
-  private async request<T>(endpoint: string, method = 'GET', body?: any): Promise<T> {
-    const res = await fetch(`${this.baseUrl}${endpoint}`, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error((err as any).message || `HTTP ${res.status}`);
-    }
-    if (res.status === 204) return {} as T;
-    return res.json();
-  }
-  get<T>(endpoint: string) { return this.request<T>(endpoint, 'GET'); }
-  post<T>(endpoint: string, body: any) { return this.request<T>(endpoint, 'POST', body); }
-  // ... you can add put, delete as needed
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://foodgenie-api-931190404419.herokuapp.com/api';
+
+interface RequestOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  headers?: Record<string, string>;
+  body?: any;
 }
+
+class ApiHelper {
+  private baseUrl: string;
+
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+
+  private async request<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+    const { method = 'GET', headers = {}, body } = options;
+
+    const config: RequestInit = {
+      method,
+      headers: { 'Content-Type': 'application/json', ...headers },
+    };
+
+    if (body && method !== 'GET') {
+      config.body = JSON.stringify(body);
+    }
+
+    try {
+      const response = await fetch(`${this.baseUrl}${endpoint}`, config);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || `HTTP Error: ${response.status}`);
+      }
+      if (response.status === 204) return {} as T;
+      return await response.json();
+    } catch (error) {
+      console.error('API Request Error:', error);
+      throw error;
+    }
+  }
+
+  async get<T>(endpoint: string, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>(endpoint, { method: 'GET', headers });
+  }
+  async post<T>(endpoint: string, body: any, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>(endpoint, { method: 'POST', body, headers });
+  }
+  async put<T>(endpoint: string, body: any, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>(endpoint, { method: 'PUT', body, headers });
+  }
+  async delete<T>(endpoint: string, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>(endpoint, { method: 'DELETE', headers });
+  }
+  async patch<T>(endpoint: string, body: any, headers?: Record<string, string>): Promise<T> {
+    return this.request<T>(endpoint, { method: 'PATCH', body, headers });
+  }
+}
+
 export const apiHelper = new ApiHelper(API_BASE_URL);
