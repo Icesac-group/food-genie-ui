@@ -36,6 +36,7 @@ const Meals = () => {
   }
 // const foods = getFoodData()
 console.log(foods)
+
   // Filter meals
   const filteredMeals = useMemo(() => {
     return meals?.filter((meal: any) => {
