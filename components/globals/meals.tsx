@@ -6,6 +6,7 @@ import { images } from "@/public/images/images";
 import { useMealsStore } from "@/store/mealsStore";
 import SearchFilter from "./SearchFilter";
 import Pagination from "./Pagination";
+import { getMeals } from "@/lib/data/mealsData";
 
 const ITEMS_PER_PAGE = 8;
 
@@ -13,6 +14,8 @@ const Meals = () => {
   const { FoodMenu } = images();
   const router = useRouter();
   const meals = useMealsStore((state: any) => state.meals);
+//  const mealsData = getMeals()
+//  console.log(mealsData)
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,9 +23,22 @@ const Meals = () => {
   const [selectedMealTags, setSelectedMealTags] = useState<string[]>([]);
   const [selectedDietary, setSelectedDietary] = useState<string[]>([]);
 
+  const [foods, setFoods] = useState<any>([]);
+  React.useEffect(() => {
+  getFoodData()
+  },[])
+  
+
+  async function getFoodData() {
+    const foods = await getMeals()
+   setFoods(foods)
+    return foods 
+  }
+// const foods = getFoodData()
+console.log(foods)
   // Filter meals
   const filteredMeals = useMemo(() => {
-    return meals.filter((meal: any) => {
+    return meals?.filter((meal: any) => {
       const matchesSearch =
         searchQuery === "" ||
         meal.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -43,12 +59,14 @@ const Meals = () => {
     });
   }, [meals, searchQuery, selectedCategory, selectedMealTags, selectedDietary]);
 
-  const totalPages = Math.ceil(filteredMeals.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredMeals?.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedMeals = filteredMeals.slice(
+  const paginatedMeals = filteredMeals?.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
+
+  
 
   React.useEffect(() => {
     setCurrentPage(1);
@@ -73,16 +91,16 @@ const Meals = () => {
 
       <div className="mb-4">
         <p className="font-campton text-[#9B9B9B] text-sm">
-          Showing {paginatedMeals.length} of {filteredMeals.length} meals
+          Showing {foods?.length} of {filteredMeals?.length} meals
         </p>
       </div>
 
-      {paginatedMeals.length > 0 ? (
+      {foods?.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
-          {paginatedMeals.map((meal: any) => (
+          {foods?.map((meal: any) => (
             <div
-              key={meal.id}
-              onClick={() => router.push(`/meals/${meal.id}`)}
+              key={meal._id}
+              onClick={() => router.push(`/meals/${meal._id}`)}
               className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
             >
               <div className="p-4">
@@ -94,7 +112,7 @@ const Meals = () => {
                     className="object-cover rounded-lg"
                   />
                 </div>
-                <div className="flex flex-wrap gap-1 mb-2 mt-4">
+                {/* <div className="flex flex-wrap gap-1 mb-2 mt-4">
                   {meal.tags.slice(0, 2).map((tag: any, tagIndex: number) => (
                     <span
                       key={tagIndex}
@@ -103,7 +121,7 @@ const Meals = () => {
                       {tag}
                     </span>
                   ))}
-                </div>
+                </div> */}
                 <h3 className="font-recoleta text-[#222021] text-base font-medium line-clamp-1">
                   {meal.name}
                 </h3>
