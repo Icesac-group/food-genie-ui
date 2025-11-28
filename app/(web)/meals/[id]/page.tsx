@@ -7,11 +7,11 @@ import MealDetails from "@/components/PageLayout/Meals/MealDetails";
 import RecommendedMeals from "@/components/PageLayout/Meals/RecommededMeals";
 
 interface PageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
-
 const MealDetailPage = ({ params }: PageProps) => {
-  const { id } = use(params);
+ const { id } = params; // correct
+
   const { FoodMenu } = images();
 
   return (
@@ -36,8 +36,8 @@ const MealDetailPage = ({ params }: PageProps) => {
       </div>
 
       <div className="container mx-auto px-5 md:px-[97px] -mt-32 relative z-10 pb-16">
-        <MealDetails mealId={id} />
-        <RecommendedMeals currentMealId={id} />
+         <MealDetails mealId={id} />
+      <RecommendedMeals currentMealId={id} />
       </div>
     </div>
   );

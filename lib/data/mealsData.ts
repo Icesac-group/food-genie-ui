@@ -33,6 +33,12 @@ export async function getMeals(){
   return getData?.data
 }
 
+export async function getMealById(id: string): Promise<Meal> {
+  const response = await api.get(`/meals/${id}`);
+  return response.data as Meal;
+}
+
+
 // export const MEALS_DATA: Meal[] = [
 //   {
 //     id: 1,
