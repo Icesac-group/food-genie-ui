@@ -49,22 +49,7 @@ const MealDetails = ({ mealId }: MealDetailsProps) => {
   const selectedAddress = mounted ? getSelectedAddress() : null;
   const hasAddress = !!selectedAddress;
 
-  // Get meal data
-  // const meal = getMealById(parseInt(mealId));
 
-  // if (!meal) {
-  //   return (
-  //     <div className="text-center py-16">
-  //       <p className="font-campton text-[#9B9B9B] text-lg">Meal not found</p>
-  //       <Button
-  //         onClick={() => router.push("/meals")}
-  //         className="mt-4 bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton"
-  //       >
-  //         Browse All Meals
-  //       </Button>
-  //     </div>
-  //   );
-  // }
 const [meal, setMeal] = useState<any>(null);
 
 useEffect(() => {
@@ -88,28 +73,6 @@ interface MealDetailsProps {
   mealId: string;
 }
 
-// const MealDetails = ({ mealId }: MealDetailsProps) => {
-//   console.log("Meal ID inside MealDetails:", mealId); // 🔹 Test log
-
-//   const [meal, setMeal] = useState<any>(null);
-
-//   useEffect(() => {
-//     if (mealId) {
-//       async function fetchMeal() {
-//         try {
-//           const data = await getMealById(mealId);
-//           setMeal(data);
-//           console.log("Fetched meal object:", data); // 🔹 Test log
-//         } catch (err) {
-//           console.error("Error fetching meal by ID:", err);
-//         }
-//       }
-//       fetchMeal();
-//     }
-//   }, [mealId]);
-
-//   return <div>{meal ? meal.name : "Loading..."}</div>;
-// };
 
 
 

@@ -35,7 +35,7 @@ const Meals = () => {
     return foods 
   }
 // const foods = getFoodData()
-console.log(foods)
+// console.log(foods)
 
   // Filter meals
   const filteredMeals = useMemo(() => {
