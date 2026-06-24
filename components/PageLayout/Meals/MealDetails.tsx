@@ -13,7 +13,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { getMealById } from "@/lib/data/mealsData";
+import { getMealById,  } from "@/lib/data/mealsData";
 import { useMealsStore } from "@/store/mealsStore";
 import { useDeliveryStore } from "@/store/deliveryStore";
 import DeliveryAddressModal from "@/components/PageLayout/WeeklyMenu/Modal/DeliveryAddressModal";
@@ -49,22 +49,32 @@ const MealDetails = ({ mealId }: MealDetailsProps) => {
   const selectedAddress = mounted ? getSelectedAddress() : null;
   const hasAddress = !!selectedAddress;
 
-  // Get meal data
-  const meal = getMealById(parseInt(mealId));
 
-  if (!meal) {
-    return (
-      <div className="text-center py-16">
-        <p className="font-campton text-[#9B9B9B] text-lg">Meal not found</p>
-        <Button
-          onClick={() => router.push("/meals")}
-          className="mt-4 bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton"
-        >
-          Browse All Meals
-        </Button>
-      </div>
-    );
+const [meal, setMeal] = useState<any>(null);
+
+useEffect(() => {
+  if (!mealId) return;
+
+  async function fetchMeal() {
+    try {
+      const data = await getMealById(mealId);
+      setMeal(data);
+    } catch (err) {
+      console.error("Failed to fetch meal:", err);
+    }
   }
+
+  fetchMeal();
+}, [mealId]);
+
+console.log("Meal:", meal);
+
+interface MealDetailsProps {
+  mealId: string;
+}
+
+
+
 
   const handleQuantityChange = (action: "increase" | "decrease") => {
     if (action === "increase") {
@@ -197,7 +207,7 @@ const MealDetails = ({ mealId }: MealDetailsProps) => {
                     ) : (
                       <div className="flex items-start justify-between">
                         <ul className="space-y-1">
-                          {meal.preferences.map((pref, index) => (
+                          {meal.preferences.map((pref: string, index: number) => (
                             <li
                               key={index}
                               className="font-campton text-[#868686] text-sm font-medium"
@@ -256,7 +266,7 @@ const MealDetails = ({ mealId }: MealDetailsProps) => {
                     </div>
                     <ul className="space-y-3">
                       {meal.prepInstructions.microwave.steps?.map(
-                        (step, index) => (
+                        (step: string, index: number) => (
                           <li
                             key={index}
                             className="font-campton text-[#313131] text-sm mb-3"
@@ -283,7 +293,7 @@ const MealDetails = ({ mealId }: MealDetailsProps) => {
                       )}
                     </div>
                     <ul className="space-y-3">
-                      {meal.prepInstructions.oven.steps?.map((step, index) => (
+                      {meal.prepInstructions.oven.steps?.map((step: string, index: number) => (
                         <li
                           key={index}
                           className="font-campton text-[#313131] text-sm mb-3"
