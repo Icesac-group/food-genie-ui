@@ -1,4 +1,4 @@
-import { http } from "../api.ts/http";
+import { http } from "../api/http";
 export interface Meal {
   name: string;
   price: number;
