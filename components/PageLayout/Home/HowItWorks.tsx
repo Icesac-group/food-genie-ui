@@ -14,9 +14,9 @@ const HowItWorks = () => {
     {
       number: "1",
       image: choosePlanImg,
-      title: "Choose Your Plan",
+      title: "Choose Your Meals",
       description:
-        "Pick a weekly or monthly plan that suits your lifestyle. Subscribers enjoy savings and priority delivery.",
+        "Browse this week's menu and pick exactly the meals you want. Each meal is individually priced — no fixed packages.",
     },
     {
       number: "2",

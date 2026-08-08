@@ -19,7 +19,7 @@ const FAQ = () => {
       {
         question: "What is Food Genie?",
         answer:
-          "FoodGenie is a subscription-based Nigerian meal service that delivers freshly prepared, authentic dishes to your doorstep once a week. You can subscribe for convenience and savings or place one-time orders whenever you'd like.",
+          "FoodGenie delivers freshly prepared, authentic Nigerian meals to your doorstep. Pick the meals you want for the week, see the price for each one, and pay exactly what you've chosen. No fixed packages or subscription required.",
       },
       {
         question: "Do I need to subscribe to order meals?",

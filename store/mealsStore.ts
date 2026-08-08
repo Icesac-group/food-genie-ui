@@ -50,6 +50,12 @@ export const useMealsStore = create<MealsStore>()(
       },
 
       updateCartItemQuantity: (cartItemId, quantity) => {
+        if (quantity <= 0) {
+          set((state) => ({
+            cart: state.cart.filter((item) => item.id !== cartItemId),
+          }));
+          return;
+        }
         set((state) => ({
           cart: state.cart.map((item) =>
             item.id === cartItemId ? { ...item, quantity } : item

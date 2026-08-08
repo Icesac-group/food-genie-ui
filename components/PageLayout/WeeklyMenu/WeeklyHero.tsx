@@ -87,13 +87,13 @@ const WeeklyHero = () => {
                   This Week's Menu
                 </h2>
                 <p className="font-campton text-[#868686] text-xs md:text-sm mb-2">
-                  Subscribe for weekly deliveries and save 20%, or order single
-                  meals to try us out. Subscribers can swap meals anytime
+                  Browse this week's menu, pick the meals you want, and see
+                  exactly what you'll pay. No packages, no commitments.
                 </p>
 
                 <div className="mb-6 bg-[#FFEBC233] p-5">
                   <h4 className="font-recoleta text-[#222021] text-xl mb-4">
-                    Why Subscribe?
+                    How it works
                   </h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {benefits.map((benefit, index) => (
@@ -119,7 +119,7 @@ const WeeklyHero = () => {
                   className="bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton px-8 py-6 rounded-lg"
                   size="sm"
                 >
-                  Subscribe to a Meal Plan
+                  Build Your Week
                 </Button>
               </div>
             )}
