@@ -1,4 +1,4 @@
-import api from "../api.ts/api";
+import { http } from "../api.ts/http";
 export interface Meal {
   name: string;
   price: number;
@@ -27,15 +27,20 @@ export interface Meal {
   
 }
 
-export async function getMeals(){
-  const getData = await api.get("/meals")
-  //console.log(getData)
-  return getData?.data
+export async function getMeals(): Promise<Meal[]> {
+  const data = await http("/meals");
+  // Handle both array responses and wrapped { data: [...] } responses
+  if (Array.isArray(data)) return data;
+  if (data?.data && Array.isArray(data.data)) return data.data;
+  if (data?.meals && Array.isArray(data.meals)) return data.meals;
+  return [];
 }
 
 export async function getMealById(id: string): Promise<Meal> {
-  const response = await api.get(`/meals/${id}`);
-  return response.data as Meal;
+  const data = await http(`/meals/${id}`);
+  if (data?._id) return data as Meal;
+  if (data?.data?._id) return data.data as Meal;
+  return data as Meal;
 }
 
 

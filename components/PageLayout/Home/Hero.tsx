@@ -74,13 +74,13 @@ const Hero = () => {
             {/* Description */}
             <p className="font-campton text-white/90 text-xs md:text-sm mb-2 max-w-2xl leading-relaxed">
               Enjoy the comfort of home-style meals without the stress of
-              cooking. Subscribe for weekly plans at a discount, or order single
-              meals to get a taste.
+              cooking. Pick exactly the meals you want each week — no fixed
+              plans, no locked-in packages.
             </p>
 
             {/* Discount Text */}
             <p className="font-campton text-[#FF7C36] font-semibold text-sm mb-4">
-              Save up to 20% when you subscribe.
+              Pay only for the meals you choose.
             </p>
 
             {/* Buttons */}
@@ -90,7 +90,7 @@ const Hero = () => {
                 className="bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton px-4 py-3  text-base rounded-lg"
                 size="lg"
               >
-                Subscribe to a Meal Plan
+                Build Your Week
               </Button>
               <Button
                 onClick={() => router.push("/meals")}
