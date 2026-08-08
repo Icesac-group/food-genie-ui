@@ -9,22 +9,22 @@ export interface SelectedMealItem {
 }
 
 export interface WeekOption {
-  label: string;          // e.g. "This Week  (Aug 5 – Aug 11)"
-  startDate: string;      // ISO — Monday of the delivery week
-  endDate: string;        // ISO — Sunday of the delivery week
-  orderCloseDate: string; // ISO — Thursday 11:59 pm of the PREVIOUS week (orders close)
-  deliveryDays: string;   // e.g. "Monday & Thursday"
-  weekOf: string;         // e.g. "August 5"
-  isClosed: boolean;      // true when current time is past orderCloseDate
+  label: string;
+  startDate: string;
+  endDate: string;
+  orderCloseDate: string;
+  deliveryDays: string;
+  weekOf: string;
+  isClosed: boolean;
 }
 
-/** Returns the current week + next 3 weeks as selectable options */
+export type OrderType = "one-time" | "recurring";
+
 export function getWeekOptions(): WeekOption[] {
   const options: WeekOption[] = [];
   const today = new Date();
 
-  // Snap to Monday of the current week
-  const dow = today.getDay(); // 0 = Sun
+  const dow = today.getDay();
   const diffToMonday = dow === 0 ? -6 : 1 - dow;
   const monday = new Date(today);
   monday.setDate(today.getDate() + diffToMonday);
@@ -32,16 +32,8 @@ export function getWeekOptions(): WeekOption[] {
 
   const fmt = (d: Date) =>
     d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
-
   const fmtLong = (d: Date) =>
     d.toLocaleDateString("en-US", { month: "long", day: "numeric" });
-
-  const fmtClose = (d: Date) =>
-    d.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
 
   for (let i = 0; i < 4; i++) {
     const start = new Date(monday);
@@ -49,15 +41,12 @@ export function getWeekOptions(): WeekOption[] {
     const end = new Date(start);
     end.setDate(start.getDate() + 6);
 
-    // Orders close the Thursday before the delivery week at 11:59 pm
     const closeDate = new Date(start);
-    closeDate.setDate(start.getDate() - 4); // Thursday of previous week
+    closeDate.setDate(start.getDate() - 4);
     closeDate.setHours(23, 59, 59, 999);
 
     const isClosed = today > closeDate;
-
-    const prefix =
-      i === 0 ? "This Week" : i === 1 ? "Next Week" : `Week ${i + 1}`;
+    const prefix = i === 0 ? "This Week" : i === 1 ? "Next Week" : `Week ${i + 1}`;
 
     options.push({
       label: `${prefix}  (${fmt(start)} – ${fmt(end)})`,
@@ -72,35 +61,15 @@ export function getWeekOptions(): WeekOption[] {
   return options;
 }
 
-/**
- * Order type — "one-time" is the default for the current implementation.
- * "recurring" is reserved for future weekly repeat functionality.
- * Adding it to the store now means the UI toggle can be wired up later
- * without any structural store changes.
- */
-export type OrderType = "one-time" | "recurring";
-
 interface SubscriptionData {
-  // Step 1: Week + Meal selection
   selectedWeek: WeekOption | null;
   selectedMeals: SelectedMealItem[];
-
-  /**
-   * Order type — always "one-time" for now.
-   * Reserved for future "Repeat this order every week" toggle.
-   */
   orderType: OrderType;
-
-  // Step 2: Register
   email: string;
   phoneNumber: string;
   password: string;
   agreedToTerms: boolean;
-
-  // Step 3: Address
   deliveryAddress: string;
-
-  // Step 4: Payment
   paymentMethod: "card" | null;
   cardNumber: string;
   expiryDate: string;
@@ -112,25 +81,19 @@ interface SubscriptionStore extends SubscriptionData {
   currentStep: number;
   isSubscribed: boolean;
 
-  // Week
   setSelectedWeek: (week: WeekOption) => void;
-
-  // Order type (reserved for future recurring order toggle)
   setOrderType: (type: OrderType) => void;
 
-  // Meal selection
   addMeal: (meal: Meal) => void;
   removeMeal: (mealId: string) => void;
   updateMealQuantity: (mealId: string, quantity: number) => void;
   clearMeals: () => void;
 
-  // Computed helpers — prices in cents, matching API
   getMealsSubtotal: () => number;
   getMealsCount: () => number;
   getDeliveryFee: () => number;
   getOrderTotal: () => number;
 
-  // Step navigation
   setRegistrationData: (data: {
     email: string;
     phoneNumber: string;
@@ -158,7 +121,7 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       isSubscribed: false,
       selectedWeek: null,
       selectedMeals: [],
-      orderType: "one-time", // default — "recurring" available for future use
+      orderType: "one-time",
       email: "",
       phoneNumber: "",
       password: "",
@@ -170,16 +133,12 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       cvv: "",
       cardholderName: "",
 
-      // Changing the week clears meal selections so totals don't bleed across weeks
       setSelectedWeek: (week) => set({ selectedWeek: week, selectedMeals: [] }),
-
       setOrderType: (type) => set({ orderType: type }),
 
       addMeal: (meal) =>
         set((state) => {
-          const existing = state.selectedMeals.find(
-            (item) => item.meal._id === meal._id
-          );
+          const existing = state.selectedMeals.find((item) => item.meal._id === meal._id);
           if (existing) {
             return {
               selectedMeals: state.selectedMeals.map((item) =>
@@ -189,16 +148,12 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
               ),
             };
           }
-          return {
-            selectedMeals: [...state.selectedMeals, { meal, quantity: 1 }],
-          };
+          return { selectedMeals: [...state.selectedMeals, { meal, quantity: 1 }] };
         }),
 
       removeMeal: (mealId) =>
         set((state) => ({
-          selectedMeals: state.selectedMeals.filter(
-            (item) => item.meal._id !== mealId
-          ),
+          selectedMeals: state.selectedMeals.filter((item) => item.meal._id !== mealId),
         })),
 
       updateMealQuantity: (mealId, quantity) => {
@@ -224,10 +179,6 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       getMealsCount: () =>
         get().selectedMeals.reduce((count, item) => count + item.quantity, 0),
 
-      /**
-       * Delegates to deliveryConfigStore so the admin toggle and threshold
-       * are the single source of truth. Uses getState() to avoid hook rules.
-       */
       getDeliveryFee: () => {
         const mealsCount = get().selectedMeals.reduce(
           (count, item) => count + item.quantity,

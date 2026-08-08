@@ -78,7 +78,7 @@ const Hero = () => {
               plans, no locked-in packages.
             </p>
 
-            {/* Discount Text */}
+            {/* Tagline */}
             <p className="font-campton text-[#FF7C36] font-semibold text-sm mb-4">
               Pay only for the meals you choose.
             </p>

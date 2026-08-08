@@ -51,7 +51,6 @@ export const useMealsStore = create<MealsStore>()(
 
       updateCartItemQuantity: (cartItemId, quantity) => {
         if (quantity <= 0) {
-          // Remove item rather than setting quantity to 0 or negative
           set((state) => ({
             cart: state.cart.filter((item) => item.id !== cartItemId),
           }));

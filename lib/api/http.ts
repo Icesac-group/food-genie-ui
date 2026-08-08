@@ -1,10 +1,21 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL!;
 
+function getUrl(endpoint: string): string {
+  // Browser: route through Next.js proxy to avoid CORS
+  // Server (SSR): call the API directly
+  if (typeof window === "undefined") {
+    return `${BASE_URL}${endpoint}`;
+  }
+  return `/api/proxy${endpoint}`;
+}
+
 export async function http<T = any>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
+  const url = getUrl(endpoint);
+
+  const res = await fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
