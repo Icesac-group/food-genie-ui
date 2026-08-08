@@ -65,8 +65,7 @@ const CheckoutModal = ({ open, onOpenChange }: CheckoutModalProps) => {
 
   const subtotal = getCartSubtotal() / 100;
   const deliveryFee = getDeliveryFee() / 100;
-  const serviceFee = 3.99;
-  const total = (getCartTotal() + 399) / 100;
+  const total = getCartTotal() / 100; // already includes delivery fee
 
   // Filter items with preferences - MOVED BEFORE useEffect
   const itemsWithPreferences = cart.filter(
@@ -376,14 +375,6 @@ const CheckoutModal = ({ open, onOpenChange }: CheckoutModalProps) => {
                   </span>
                   <span className="font-campton text-[#222021] text-sm">
                     ${deliveryFee.toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="font-campton text-[#222021] text-sm">
-                    Services
-                  </span>
-                  <span className="font-campton text-[#222021] text-sm">
-                    ${serviceFee.toFixed(2)}
                   </span>
                 </div>
               </div>

@@ -12,6 +12,7 @@ const publicRoutes = [
   "/meals",
   "/meals/*",
   "/subscribe",
+  "/admin/settings",
 ];
 
 const normalizePath = (path: string) => path.replace(/\/$/, "");

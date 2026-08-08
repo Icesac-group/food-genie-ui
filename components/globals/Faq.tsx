@@ -8,7 +8,7 @@ const FAQ = () => {
 
   const categories = [
     "General Information",
-    "Plans & Pricing",
+    "Ordering & Pricing",
     "Ordering & Delivery",
     "Meal Selection & Curation",
     "Account & Support",
@@ -19,7 +19,7 @@ const FAQ = () => {
       {
         question: "What is Food Genie?",
         answer:
-          "FoodGenie is a subscription-based Nigerian meal service that delivers freshly prepared, authentic dishes to your doorstep once a week. You can subscribe for convenience and savings or place one-time orders whenever you'd like.",
+          "FoodGenie delivers freshly prepared, authentic Nigerian meals to your doorstep. Pick the meals you want for the week, see the price for each one, and pay exactly what you've chosen. No fixed packages or subscription required.",
       },
       {
         question: "Do I need to subscribe to order meals?",
@@ -37,19 +37,19 @@ const FAQ = () => {
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       },
     ],
-    "Plans & Pricing": [
+    "Ordering & Pricing": [
       {
-        question: "What subscription plans are available?",
+        question: "How is pricing calculated?",
         answer:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          "There are no fixed plans or packages. Each meal has its own price. You simply select the meals and quantities you want for the week, and your total is calculated automatically based on your selections.",
       },
       {
-        question: "How much does it cost?",
+        question: "How much does each meal cost?",
         answer:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
       },
       {
-        question: "Can I cancel my subscription anytime?",
+        question: "Can I change my order before it's prepared?",
         answer:
           "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
       },

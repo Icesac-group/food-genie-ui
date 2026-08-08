@@ -56,7 +56,8 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
   ) => {
     if (action === "increase") {
       updateCartItemQuantity(cartItemId, currentQuantity + 1);
-    } else if (action === "decrease" && currentQuantity > 1) {
+    } else if (action === "decrease") {
+      // At qty 1, decrease removes the item entirely — no predefined minimum
       updateCartItemQuantity(cartItemId, currentQuantity - 1);
     }
   };
@@ -142,8 +143,8 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
                             item.quantity
                           )
                         }
-                        className="w-6 h-6 rounded-sm bg-[#FFE5D0] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#FFD4B3] transition-colors"
-                        disabled={item.quantity === 1}
+                        className="w-6 h-6 rounded-sm bg-[#FFE5D0] flex items-center justify-center hover:bg-[#FFD4B3] transition-colors"
+                        aria-label={item.quantity === 1 ? "Remove item" : "Decrease quantity"}
                       >
                         <Minus className="w-3 h-3 text-[#FF7C36]" />
                       </button>
@@ -159,6 +160,7 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
                           )
                         }
                         className="w-6 h-6 rounded-sm bg-[#FFE5D0] flex items-center justify-center hover:bg-[#FFD4B3] transition-colors"
+                        aria-label="Increase quantity"
                       >
                         <Plus className="w-3 h-3 text-[#FF7C36]" />
                       </button>
