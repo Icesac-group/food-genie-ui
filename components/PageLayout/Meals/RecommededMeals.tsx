@@ -10,13 +10,16 @@ interface RecommendedMealsProps {
   currentMealId: string;
 }
 
-const RecommendedMeals = ({ currentMealId }: RecommendedMealsProps) => {
+const RecommendedMeals = async ({ currentMealId }: RecommendedMealsProps) => {
   const { FoodMenu } = images();
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Mock recommended meals - filter out current meal
-  const recommendedMeals = getMeals(parseInt(currentMealId), 8);
+  // Mock recommended meals - fetch all, filter out current meal and limit to 8
+  const allMeals = await getMeals();
+  const recommendedMeals = allMeals
+    .filter((m: any) => (m as any).id !== parseInt(currentMealId))
+    .slice(0, 8);
 
   const itemsPerPage = 4;
   const totalSlides = Math.ceil(recommendedMeals.length / itemsPerPage);
@@ -53,10 +56,10 @@ const RecommendedMeals = ({ currentMealId }: RecommendedMealsProps) => {
 
       {/* Meals Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {visibleMeals.map((meal) => (
+        {visibleMeals.map((meal: any) => (
           <div
-            key={meal.id}
-            onClick={() => router.push(`/meals/${meal.id}`)}
+            key={(meal as any).id}
+            onClick={() => router.push(`/meals/${(meal as any).id}`)}
             className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
           >
             <div className="p-4">
@@ -70,7 +73,7 @@ const RecommendedMeals = ({ currentMealId }: RecommendedMealsProps) => {
               </div>
 
               <div className="flex flex-wrap gap-2 mb-3">
-                {meal.tags.map((tag, index) => (
+                {meal.tags.map((tag: string, index: number) => (
                   <span
                     key={index}
                     className="px-3 py-1 text-[#FD4D07] bg-[#FF7C3633] border border-[#FF7C36] rounded-full font-campton text-xs font-medium"
