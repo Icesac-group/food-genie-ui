@@ -27,7 +27,7 @@ export const useMealsStore = create<MealsStore>()(
     (set, get) => ({
       cart: [],
 
-      addToCart: (meal, quantity, preferences) => {
+      addToCart: (meal: any, quantity, preferences) => {
         set((state) => {
           // Add new item with preferences
           const newItem: CartItem = {
