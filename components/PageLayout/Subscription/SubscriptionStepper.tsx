@@ -4,7 +4,7 @@ import { Check } from "lucide-react";
 import { useSubscriptionStore } from "@/store/subscriptionStore";
 
 const steps = [
-  { number: 1, label: "Plan" },
+  { number: 1, label: "Meals" },
   { number: 2, label: "Register" },
   { number: 3, label: "Address" },
   { number: 4, label: "Payment" },

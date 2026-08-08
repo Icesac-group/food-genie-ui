@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { images } from "@/public/images/images";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { getRecommendedMeals } from "@/lib/data/mealsData";
+import { getMeals } from "@/lib/data/mealsData";
 
 interface RecommendedMealsProps {
   currentMealId: string;
@@ -16,7 +16,7 @@ const RecommendedMeals = ({ currentMealId }: RecommendedMealsProps) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   // Mock recommended meals - filter out current meal
-  const recommendedMeals = getRecommendedMeals(parseInt(currentMealId), 8);
+  const recommendedMeals = getMeals(parseInt(currentMealId), 8);
 
   const itemsPerPage = 4;
   const totalSlides = Math.ceil(recommendedMeals.length / itemsPerPage);

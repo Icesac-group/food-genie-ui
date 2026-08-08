@@ -3,7 +3,7 @@ import React from "react";
 import Image from "next/image";
 import { images } from "@/public/images/images";
 import SubscriptionStepper from "@/components/PageLayout/Subscription/SubscriptionStepper";
-import PlanStep from "@/components/PageLayout/Subscription/PlanStep";
+import MealSelectionStep from "@/components/PageLayout/Subscription/MealSelectionStep";
 import RegisterStep from "@/components/PageLayout/Subscription/RegisterStep";
 import AddressStep from "@/components/PageLayout/Subscription/AddressStep";
 import PaymentStep from "@/components/PageLayout/Subscription/PaymentStep";
@@ -16,7 +16,7 @@ const SubscribePage = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <PlanStep />;
+        return <MealSelectionStep />;
       case 2:
         return <RegisterStep />;
       case 3:
@@ -24,7 +24,7 @@ const SubscribePage = () => {
       case 4:
         return <PaymentStep />;
       default:
-        return <PlanStep />;
+        return <MealSelectionStep />;
     }
   };
 

@@ -121,13 +121,13 @@ const RegisterStep = () => {
       {/* Header */}
       <div className="text-center mb-8">
         <p className="font-calligraffitti text-[#FF7C36] text-lg mb-2">
-          One Meal at a Time!
+          Almost there!
         </p>
         <h1 className="font-recoleta text-[#222021] text-3xl md:text-4xl mb-3">
           Create Your Account
         </h1>
         <p className="font-campton text-[#868686] text-sm">
-          Join thousands of food lovers getting fresh meals weekly
+          Save your details so checkout is fast every week
         </p>
       </div>
 
