@@ -91,7 +91,7 @@ const Footer = () => {
                     />
                     <button
                       type="submit"
-                      className="px-6 md:px-8 py-3 md:py-4 bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton font-medium rounded-lg transition-colors text-xs md:text-base whitespace-nowrap"
+                      className="px-6 md:px-8 py-3 md:py-4 bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white font-campton font-medium rounded-lg transition-colors text-xs md:text-base whitespace-nowrap"
                     >
                       Join Wait List
                     </button>
@@ -140,7 +140,7 @@ const Footer = () => {
                     <li key={index}>
                       <Link
                         href={link.href}
-                        className="font-campton text-white/70 hover:text-white transition-colors text-sm"
+                        className="font-campton text-white/70 hover:text-white active:text-[#FF7C36] transition-colors text-sm"
                       >
                         {link.label}
                       </Link>
@@ -158,7 +158,7 @@ const Footer = () => {
                     <li key={index}>
                       <Link
                         href={link.href}
-                        className="font-campton text-white/70 hover:text-white transition-colors text-sm"
+                        className="font-campton text-white/70 hover:text-white active:text-[#FF7C36] transition-colors text-sm"
                       >
                         {link.label}
                       </Link>
@@ -177,7 +177,7 @@ const Footer = () => {
                     <li key={index}>
                       <Link
                         href={link.href}
-                        className="font-campton text-white/70 hover:text-white transition-colors text-sm"
+                        className="font-campton text-white/70 hover:text-white active:text-[#FF7C36] transition-colors text-sm"
                       >
                         {link.label}
                       </Link>

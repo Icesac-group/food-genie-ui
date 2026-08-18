@@ -36,13 +36,6 @@ export function getWeekOptions(): WeekOption[] {
   const fmtLong = (d: Date) =>
     d.toLocaleDateString("en-US", { month: "long", day: "numeric" });
 
-  const fmtClose = (d: Date) =>
-    d.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
-
   for (let i = 0; i < 4; i++) {
     const start = new Date(monday);
     start.setDate(monday.getDate() + i * 7);
@@ -78,27 +71,25 @@ export function getWeekOptions(): WeekOption[] {
  * Adding it to the store now means the UI toggle can be wired up later
  * without any structural store changes.
  */
+export type FulfillmentMethod = "delivery" | "pickup";
 export type OrderType = "one-time" | "recurring";
 
 interface SubscriptionData {
   // Step 1: Week + Meal selection
   selectedWeek: WeekOption | null;
   selectedMeals: SelectedMealItem[];
-
-  /**
-   * Order type — always "one-time" for now.
-   * Reserved for future "Repeat this order every week" toggle.
-   */
   orderType: OrderType;
+
+  // Step 3: Fulfillment — delivery or pickup
+  fulfillmentMethod: FulfillmentMethod;
+  selectedPickupLocationId: string | null; // only used when fulfillmentMethod === "pickup"
+  deliveryAddress: string;                 // only used when fulfillmentMethod === "delivery"
 
   // Step 2: Register
   email: string;
   phoneNumber: string;
   password: string;
   agreedToTerms: boolean;
-
-  // Step 3: Address
-  deliveryAddress: string;
 
   // Step 4: Payment
   paymentMethod: "card" | null;
@@ -117,6 +108,10 @@ interface SubscriptionStore extends SubscriptionData {
 
   // Order type (reserved for future recurring order toggle)
   setOrderType: (type: OrderType) => void;
+
+  // Fulfillment method
+  setFulfillmentMethod: (method: FulfillmentMethod) => void;
+  setSelectedPickupLocationId: (id: string | null) => void;
 
   // Meal selection
   addMeal: (meal: Meal) => void;
@@ -158,7 +153,9 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       isSubscribed: false,
       selectedWeek: null,
       selectedMeals: [],
-      orderType: "one-time", // default — "recurring" available for future use
+      orderType: "one-time",
+      fulfillmentMethod: "delivery",
+      selectedPickupLocationId: null,
       email: "",
       phoneNumber: "",
       password: "",
@@ -170,10 +167,15 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       cvv: "",
       cardholderName: "",
 
-      // Changing the week clears meal selections so totals don't bleed across weeks
       setSelectedWeek: (week) => set({ selectedWeek: week, selectedMeals: [] }),
 
       setOrderType: (type) => set({ orderType: type }),
+
+      setFulfillmentMethod: (method) =>
+        set({ fulfillmentMethod: method, selectedPickupLocationId: null }),
+
+      setSelectedPickupLocationId: (id) =>
+        set({ selectedPickupLocationId: id }),
 
       addMeal: (meal) =>
         set((state) => {
@@ -225,10 +227,12 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
         get().selectedMeals.reduce((count, item) => count + item.quantity, 0),
 
       /**
-       * Delegates to deliveryConfigStore so the admin toggle and threshold
-       * are the single source of truth. Uses getState() to avoid hook rules.
+       * Returns 0 for pickup orders.
+       * For delivery, delegates to deliveryConfigStore (admin-configured fee
+       * with optional free-delivery threshold).
        */
       getDeliveryFee: () => {
+        if (get().fulfillmentMethod === "pickup") return 0;
         const mealsCount = get().selectedMeals.reduce(
           (count, item) => count + item.quantity,
           0
@@ -262,6 +266,8 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
           selectedWeek: null,
           selectedMeals: [],
           orderType: "one-time",
+          fulfillmentMethod: "delivery",
+          selectedPickupLocationId: null,
           email: "",
           phoneNumber: "",
           password: "",

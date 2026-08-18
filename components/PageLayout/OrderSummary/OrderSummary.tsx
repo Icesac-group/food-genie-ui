@@ -1,12 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { images } from "@/public/images/images";
 import { Button } from "@/components/ui/button";
-import { Plus, Minus, Trash2, ChevronDown, Pencil } from "lucide-react";
+import { Plus, Minus, Trash2, ChevronDown, Pencil, Truck, Store, MapPin, Clock, CheckCircle } from "lucide-react";
 import { useMealsStore } from "@/store/mealsStore";
 import { useDeliveryStore } from "@/store/deliveryStore";
+import { useDeliveryConfigStore } from "@/store/deliveryConfigStore";
 import DeliveryAddressModal from "@/components/PageLayout/WeeklyMenu/Modal/DeliveryAddressModal";
 import CheckoutModal from "@/components/PageLayout/Checkout/CheckoutModal";
 import { toast } from "sonner";
@@ -16,8 +14,6 @@ interface OrderSummaryProps {
 }
 
 const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
-  const { FoodMenu } = images();
-  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,6 +27,12 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
   const getCartSubtotal = useMealsStore((state) => state.getCartSubtotal);
   const getDeliveryFee = useMealsStore((state) => state.getDeliveryFee);
   const getCartTotal = useMealsStore((state) => state.getCartTotal);
+  const fulfillmentMethod = useMealsStore((state) => state.fulfillmentMethod);
+  const setFulfillmentMethod = useMealsStore((state) => state.setFulfillmentMethod);
+
+  const getActivePickupLocations = useDeliveryConfigStore((s) => s.getActivePickupLocations);
+  const activePickupLocations = getActivePickupLocations();
+  const [selectedPickupLocationId, setSelectedPickupLocationId] = useState<string | null>(null);
 
   const [checkoutModalOpen, setCheckoutModalOpen] = useState(false);
 
@@ -68,14 +70,16 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
   };
 
   const handleCheckout = () => {
-    if (!hasAddress) {
-      // alert("Please add a delivery address before checkout");
+    if (fulfillmentMethod === "delivery" && !hasAddress) {
       toast.error("Please add a delivery address before checkout");
       setModalOpen(true);
       return;
     }
+    if (fulfillmentMethod === "pickup" && !selectedPickupLocationId) {
+      toast.error("Please select a pickup location");
+      return;
+    }
     if (cart.length === 0) {
-      // alert("Your cart is empty");
       toast.error("Your cart is empty");
       return;
     }
@@ -85,9 +89,88 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
   return (
     <>
       <div className="bg-white rounded-2xl p-6 md:p-8 shadow-lg sticky top-8">
-        <h3 className="font-recoleta text-[#222021] text-2xl font-normal mb-6">
-          Order Summary
+        <h3 className="font-recoleta text-[#222021] text-2xl font-normal mb-4">
+          Your Order
         </h3>
+
+        {/* ── Fulfillment Toggle ── */}
+        <div className="grid grid-cols-2 gap-2 mb-6">
+          <button
+            onClick={() => setFulfillmentMethod("delivery")}
+            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg border-2 transition-all min-h-[44px] ${
+              fulfillmentMethod === "delivery"
+                ? "bg-[#FF7C36] border-[#FF7C36] text-white"
+                : "bg-white border-[#E0E0E0] text-[#868686] hover:border-[#FF7C36] hover:text-[#FF7C36] active:bg-[#FFF9F0]"
+            }`}
+          >
+            <Truck className="w-4 h-4 flex-shrink-0" />
+            <span className="font-campton text-sm font-medium">Delivery</span>
+          </button>
+          <button
+            onClick={() => setFulfillmentMethod("pickup")}
+            className={`flex items-center justify-center gap-2 py-3 px-3 rounded-lg border-2 transition-all min-h-[44px] ${
+              fulfillmentMethod === "pickup"
+                ? "bg-[#FF7C36] border-[#FF7C36] text-white"
+                : "bg-white border-[#E0E0E0] text-[#868686] hover:border-[#FF7C36] hover:text-[#FF7C36] active:bg-[#FFF9F0]"
+            }`}
+          >
+            <Store className="w-4 h-4 flex-shrink-0" />
+            <span className="font-campton text-sm font-medium">Pickup</span>
+          </button>
+        </div>
+
+        {/* ── Pickup Location Selector ── */}
+        {fulfillmentMethod === "pickup" && (
+          <div className="mb-6">
+            {activePickupLocations.length === 0 ? (
+              <div className="border border-[#E0E0E0] rounded-xl p-4 text-center">
+                <Store className="w-6 h-6 text-[#E0E0E0] mx-auto mb-1" />
+                <p className="font-campton text-[#9B9B9B] text-xs">No pickup locations available.</p>
+                <button onClick={() => setFulfillmentMethod("delivery")} className="font-campton text-[#FF7C36] text-xs underline mt-1">Switch to delivery</button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {activePickupLocations.map((loc) => {
+                  const isSelected = selectedPickupLocationId === loc.id;
+                  return (
+                    <button
+                      key={loc.id}
+                      onClick={() => setSelectedPickupLocationId(loc.id)}
+                      className={`w-full text-left p-3 rounded-xl border-2 transition-all ${
+                        isSelected
+                          ? "border-[#FF7C36] bg-[#FFF9F0]"
+                          : "border-[#E0E0E0] bg-white hover:border-[#FFB88C]"
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-1.5 mb-1">
+                            <p className={`font-recoleta text-sm font-medium ${isSelected ? "text-[#FF7C36]" : "text-[#222021]"}`}>
+                              {loc.name}
+                            </p>
+                            {isSelected && <CheckCircle className="w-3.5 h-3.5 text-[#FF7C36]" />}
+                          </div>
+                          <div className="flex items-start gap-1 mb-1">
+                            <MapPin className="w-3 h-3 text-[#868686] flex-shrink-0 mt-0.5" />
+                            <p className="font-campton text-[#868686] text-xs">{loc.address}</p>
+                          </div>
+                          <div className="flex items-start gap-1">
+                            <Clock className="w-3 h-3 text-[#868686] flex-shrink-0 mt-0.5" />
+                            <p className="font-campton text-[#868686] text-xs">{loc.pickupDays}</p>
+                          </div>
+                          {loc.instructions && (
+                            <p className="font-campton text-[#868686] text-xs mt-1 italic">{loc.instructions}</p>
+                          )}
+                        </div>
+                        <span className="font-campton text-green-600 text-xs font-semibold flex-shrink-0">FREE</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         {cart.length === 0 ? (
           <p className="font-campton text-[#9B9B9B] text-sm mb-6">
@@ -127,7 +210,8 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
                     </div>
                     <button
                       onClick={() => removeFromCart(item.id)}
-                      className="text-[#FF7C36] hover:text-[#FF6B1F]"
+                      className="text-[#FF7C36] hover:text-[#FF6B1F] active:text-[#FF5500] p-1 rounded transition-colors"
+                      aria-label={`Remove ${item.meal.name}`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -143,7 +227,7 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
                             item.quantity
                           )
                         }
-                        className="w-6 h-6 rounded-sm bg-[#FFE5D0] flex items-center justify-center hover:bg-[#FFD4B3] transition-colors"
+                        className="w-8 h-8 rounded-md bg-[#FFE5D0] flex items-center justify-center hover:bg-[#FFD4B3] active:bg-[#FFC49A] transition-colors"
                         aria-label={item.quantity === 1 ? "Remove item" : "Decrease quantity"}
                       >
                         <Minus className="w-3 h-3 text-[#FF7C36]" />
@@ -159,7 +243,7 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
                             item.quantity
                           )
                         }
-                        className="w-6 h-6 rounded-sm bg-[#FFE5D0] flex items-center justify-center hover:bg-[#FFD4B3] transition-colors"
+                        className="w-8 h-8 rounded-md bg-[#FFE5D0] flex items-center justify-center hover:bg-[#FFD4B3] active:bg-[#FFC49A] transition-colors"
                         aria-label="Increase quantity"
                       >
                         <Plus className="w-3 h-3 text-[#FF7C36]" />
@@ -184,12 +268,16 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-campton text-[#222021] text-sm">
-                  Delivery Fee
+                <span className="font-campton text-[#868686] text-sm">
+                  {fulfillmentMethod === "pickup" ? "Pickup" : "Delivery"}
                 </span>
-                <span className="font-campton text-[#222021] text-sm">
-                  ${deliveryFee.toFixed(2)}
-                </span>
+                {fulfillmentMethod === "pickup" ? (
+                  <span className="font-campton text-green-600 text-sm font-semibold">FREE 🎉</span>
+                ) : deliveryFee === 0 ? (
+                  <span className="font-campton text-green-600 text-sm font-semibold">FREE 🎉</span>
+                ) : (
+                  <span className="font-campton text-[#222021] text-sm">${deliveryFee.toFixed(2)}</span>
+                )}
               </div>
             </div>
 
@@ -212,7 +300,7 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
             {showCheckoutButton && (
               <Button
                 onClick={handleCheckout}
-                className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton py-6 mb-6 text-sm"
+                className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white font-campton py-6 mb-6 text-sm"
                 size="sm"
               >
                 Pay & Checkout
@@ -221,12 +309,12 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
           </>
         )}
 
-        {/* Delivery Address */}
-        {mounted && (
+        {/* Delivery Address - only show for delivery */}
+        {mounted && fulfillmentMethod === "delivery" && (
           <div>
             <button
               onClick={() => setShowAddressDetails(!showAddressDetails)}
-              className="w-full flex items-center justify-between"
+              className="w-full flex items-center justify-between py-2 hover:text-[#FF7C36] transition-colors"
             >
               <span className="font-campton text-[#222021] text-sm font-semibold">
                 Delivery Address
@@ -257,7 +345,8 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
                       </div>
                       <button
                         onClick={() => handleOpenModal(true)}
-                        className="text-[#FF7C36] hover:text-[#FF6B1F]"
+                        className="text-[#FF7C36] hover:text-[#FF6B1F] active:text-[#FF5500] p-1 rounded transition-colors"
+                        aria-label="Edit address"
                       >
                         <Pencil className="w-4 h-4" />
                       </button>

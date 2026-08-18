@@ -122,10 +122,10 @@ const TopMenuCarousel = () => {
                 <button
                   key={index}
                   onClick={() => setCurrentSlide(index)}
-                  className={`h-2 rounded-full transition-all ${
+                  className={`h-2 rounded-full transition-all hover:opacity-80 ${
                     index === currentSlide
                       ? "w-12 bg-[#FF7C36]"
-                      : "w-2 bg-gray-300"
+                      : "w-2 bg-gray-300 hover:bg-[#FFB88C]"
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
@@ -136,14 +136,14 @@ const TopMenuCarousel = () => {
             <div className="flex gap-2 ml-auto">
               <button
                 onClick={handlePrevious}
-                className="w-10 h-10 rounded-full   bg-[#FF7C361A] text-[#FF7C36] hover:bg-[#FF7C36] hover:text-white flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-full bg-[#FF7C361A] text-[#FF7C36] hover:bg-[#FF7C36] hover:text-white active:bg-[#FF6B1F] flex items-center justify-center transition-colors"
                 aria-label="Previous slide"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={handleNext}
-                className="w-10 h-10 rounded-full  bg-[#FF7C361A] text-[#FF7C36] hover:bg-[#FF7C36] hover:text-white flex items-center justify-center transition-colors"
+                className="w-10 h-10 rounded-full bg-[#FF7C361A] text-[#FF7C36] hover:bg-[#FF7C36] hover:text-white active:bg-[#FF6B1F] flex items-center justify-center transition-colors"
                 aria-label="Next slide"
               >
                 <ChevronRight className="w-5 h-5" />

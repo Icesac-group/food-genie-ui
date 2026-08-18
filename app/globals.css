@@ -123,6 +123,46 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  /* ── Interactive element baseline ───────────────────────────────────────
+     Ensures every clickable element shows a pointer cursor and gets a
+     smooth transition, without having to add cursor-pointer to each one.
+  ── */
+  button,
+  a,
+  [role="button"],
+  label[for],
+  select,
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="submit"],
+  input[type="button"],
+  input[type="file"] {
+    cursor: pointer;
+    transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+
+  /* Disabled state — always show not-allowed cursor */
+  button:disabled,
+  [role="button"][aria-disabled="true"],
+  input:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* Active/pressed state — subtle scale-down feedback */
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    transform: scale(0.97);
+  }
+
+  /* Minimum tap target for mobile (44×44px recommended by WCAG) */
+  button,
+  [role="button"] {
+    min-height: 2rem;
+  }
 }
 
 .font-campton {

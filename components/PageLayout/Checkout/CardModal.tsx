@@ -208,7 +208,7 @@ const CardModal = ({ open, onOpenChange }: CardModalProps) => {
             {/* Save Button */}
             <Button
               onClick={handleSave}
-              className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton py-6 text-base rounded-lg mt-4"
+              className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white font-campton py-6 text-base rounded-lg mt-4"
             >
               Save
             </Button>

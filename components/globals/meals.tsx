@@ -102,7 +102,7 @@ const Meals = () => {
             <div
               key={meal._id}
               onClick={() => router.push(`/meals/${meal._id}`)}
-              className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow cursor-pointer"
+              className="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl active:scale-[0.98] transition-all cursor-pointer"
             >
               <div className="p-4">
                 <div className="relative h-48 w-full mb-2">

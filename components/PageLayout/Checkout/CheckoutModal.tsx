@@ -142,7 +142,8 @@ const CheckoutModal = ({ open, onOpenChange }: CheckoutModalProps) => {
               </DialogTitle>
               <button
                 onClick={() => onOpenChange(false)}
-                className="text-[#868686] hover:text-[#222021]"
+                className="text-[#868686] hover:text-[#222021] active:text-[#000] p-1 rounded transition-colors"
+                aria-label="Close"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -197,7 +198,8 @@ const CheckoutModal = ({ open, onOpenChange }: CheckoutModalProps) => {
                             onClick={() =>
                               handleEditPreferences(item.id, item.preferences!)
                             }
-                            className="absolute top-3 right-3 text-[#FF7C36] hover:text-[#FF6B1F]"
+                            className="absolute top-3 right-3 text-[#FF7C36] hover:text-[#FF6B1F] active:text-[#FF5500] p-1 rounded transition-colors"
+                            aria-label="Edit preferences"
                           >
                             <Pencil className="w-4 h-4" />
                           </button>
@@ -347,7 +349,7 @@ const CheckoutModal = ({ open, onOpenChange }: CheckoutModalProps) => {
                   </div>
                   <button
                     onClick={() => setCardModalOpen(true)}
-                    className="text-[#FF7C36] hover:text-[#FF6B1F] text-sm font-campton"
+                    className="text-[#FF7C36] hover:text-[#FF6B1F] active:text-[#FF5500] text-sm font-campton underline transition-colors"
                   >
                     Change
                   </button>
@@ -388,7 +390,7 @@ const CheckoutModal = ({ open, onOpenChange }: CheckoutModalProps) => {
                     ${total.toFixed(2)}
                   </span>
                 </div>
-                <button className="font-campton text-[#868686] text-xs hover:text-[#FF7C36] flex items-center gap-1">
+                <button className="font-campton text-[#868686] text-xs hover:text-[#FF7C36] active:text-[#FF6B1F] flex items-center gap-1 transition-colors">
                   ⓘ Fees Information
                 </button>
               </div>
@@ -397,7 +399,7 @@ const CheckoutModal = ({ open, onOpenChange }: CheckoutModalProps) => {
             {/* Place Order Button */}
             <Button
               onClick={handlePlaceOrder}
-              className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton py-6 text-base rounded-md"
+              className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white font-campton py-6 text-base rounded-md"
               size="sm"
             >
               Pay To Order

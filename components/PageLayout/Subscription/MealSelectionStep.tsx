@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import Image, { StaticImageData } from "next/image";
-import { ArrowLeft, Plus, Minus, ShoppingBag, X, CalendarDays, ChevronRight } from "lucide-react";
+import { ArrowLeft, Plus, Minus, ShoppingBag, X, CalendarDays, ChevronRight, Truck, Store } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useSubscriptionStore } from "@/store/subscriptionStore";
@@ -44,7 +44,7 @@ const MealCard = ({ meal, cartQty, image, onAdd, onRemove }: MealCardProps) => {
       className={`bg-white rounded-xl border-2 overflow-hidden flex flex-col transition-all ${
         isAdded
           ? "border-[#FF7C36] shadow-md"
-          : "border-[#E0E0E0] hover:border-[#FFB88C]"
+          : "border-[#E0E0E0] hover:border-[#FFB88C] hover:shadow-sm"
       } ${unavailable ? "opacity-60" : ""}`}
     >
       {/* Image */}
@@ -96,18 +96,18 @@ const MealCard = ({ meal, cartQty, image, onAdd, onRemove }: MealCardProps) => {
               <button
                 onClick={decrease}
                 disabled={unavailable}
-                className="w-8 h-8 rounded-md border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-9 h-9 rounded-md border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] active:bg-[#FFE5D0] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Decrease quantity"
               >
                 <Minus className="w-3.5 h-3.5 text-[#FF7C36]" />
               </button>
-              <span className="font-campton text-[#222021] text-sm font-semibold w-5 text-center">
+              <span className="font-campton text-[#222021] text-sm font-semibold w-6 text-center">
                 {localQty}
               </span>
               <button
                 onClick={increase}
                 disabled={unavailable}
-                className="w-8 h-8 rounded-md border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                className="w-9 h-9 rounded-md border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] active:bg-[#FFE5D0] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 aria-label="Increase quantity"
               >
                 <Plus className="w-3.5 h-3.5 text-[#FF7C36]" />
@@ -120,13 +120,13 @@ const MealCard = ({ meal, cartQty, image, onAdd, onRemove }: MealCardProps) => {
             <div className="flex gap-2">
               <button
                 onClick={() => onAdd(localQty)}
-                className="flex-1 py-2.5 rounded-lg bg-[#FF7C36] text-white font-campton text-sm font-medium hover:bg-[#FF6B1F] transition-colors"
+                className="flex-1 py-3 rounded-lg bg-[#FF7C36] text-white font-campton text-sm font-medium hover:bg-[#FF6B1F] active:bg-[#FF5500] transition-colors"
               >
                 Update order
               </button>
               <button
                 onClick={onRemove}
-                className="px-3 py-2.5 rounded-lg border border-[#E0E0E0] text-[#868686] hover:border-red-300 hover:text-red-400 transition-colors"
+                className="px-3 py-3 rounded-lg border border-[#E0E0E0] text-[#868686] hover:border-red-300 hover:text-red-400 active:bg-red-50 transition-colors"
                 aria-label="Remove from order"
               >
                 <X className="w-4 h-4" />
@@ -136,7 +136,7 @@ const MealCard = ({ meal, cartQty, image, onAdd, onRemove }: MealCardProps) => {
             <button
               onClick={() => !unavailable && onAdd(localQty)}
               disabled={unavailable}
-              className="w-full py-2.5 rounded-lg bg-[#FF7C36] text-white font-campton text-sm font-medium hover:bg-[#FF6B1F] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              className="w-full py-3 rounded-lg bg-[#FF7C36] text-white font-campton text-sm font-medium hover:bg-[#FF6B1F] active:bg-[#FF5500] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Add to order
             </button>
@@ -161,6 +161,8 @@ const MealSelectionStep = () => {
   const getDeliveryFee     = useSubscriptionStore((s) => s.getDeliveryFee);
   const getMealsCount      = useSubscriptionStore((s) => s.getMealsCount);
   const nextStep           = useSubscriptionStore((s) => s.nextStep);
+  const fulfillmentMethod  = useSubscriptionStore((s) => s.fulfillmentMethod);
+  const setFulfillmentMethod = useSubscriptionStore((s) => s.setFulfillmentMethod);
 
   const [meals, setMeals]               = useState<Meal[]>([]);
   const [loading, setLoading]           = useState(true);
@@ -210,7 +212,7 @@ const MealSelectionStep = () => {
       {/* Back */}
       <button
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-[#868686] hover:text-[#FF7C36] transition-colors mb-6"
+        className="flex items-center gap-2 text-[#868686] hover:text-[#FF7C36] active:text-[#FF6B1F] transition-colors mb-6 min-h-[44px]"
       >
         <ArrowLeft className="w-5 h-5" />
         <span className="font-campton text-sm">Back</span>
@@ -252,7 +254,7 @@ const MealSelectionStep = () => {
                     ? "border-[#E0E0E0] bg-[#F9F9F9] opacity-60 cursor-not-allowed"
                     : isSelected
                     ? "border-[#FF7C36] bg-[#FFF9F0] shadow-md"
-                    : "border-[#E0E0E0] bg-white hover:border-[#FFB88C] cursor-pointer"
+                    : "border-[#E0E0E0] bg-white hover:border-[#FFB88C] hover:shadow-md active:scale-[0.98] cursor-pointer"
                 }`}
               >
                 {/* Closed badge */}
@@ -362,7 +364,7 @@ const MealSelectionStep = () => {
                   const open = weekOptions.find((w) => !w.isClosed);
                   if (open) setSelectedWeek(open);
                 }}
-                className="font-campton text-xs text-[#FF7C36] underline hover:text-[#FF6B1F] whitespace-nowrap self-start sm:self-auto"
+                className="font-campton text-xs text-[#FF7C36] underline hover:text-[#FF6B1F] active:text-[#FF5500] whitespace-nowrap self-start sm:self-auto min-h-[36px] px-1"
               >
                 Change week
               </button>
@@ -486,7 +488,7 @@ const MealSelectionStep = () => {
                             </span>
                             <button
                               onClick={() => removeMeal(item.meal._id)}
-                              className="text-[#CCCCCC] hover:text-red-400 transition-colors"
+                              className="text-[#CCCCCC] hover:text-red-400 active:text-red-500 transition-colors p-1 rounded"
                               aria-label={`Remove ${item.meal.name}`}
                             >
                               <X className="w-3.5 h-3.5" />
@@ -506,7 +508,7 @@ const MealSelectionStep = () => {
                                   ? removeMeal(item.meal._id)
                                   : updateMealQuantity(item.meal._id, item.quantity - 1)
                               }
-                              className="w-6 h-6 rounded border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] transition-colors"
+                              className="w-8 h-8 rounded border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] active:bg-[#FFE5D0] transition-colors"
                               aria-label="Decrease"
                             >
                               <Minus className="w-3 h-3 text-[#FF7C36]" />
@@ -518,7 +520,7 @@ const MealSelectionStep = () => {
                               onClick={() =>
                                 updateMealQuantity(item.meal._id, item.quantity + 1)
                               }
-                              className="w-6 h-6 rounded border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] transition-colors"
+                              className="w-8 h-8 rounded border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] active:bg-[#FFE5D0] transition-colors"
                               aria-label="Increase"
                             >
                               <Plus className="w-3 h-3 text-[#FF7C36]" />
@@ -561,6 +563,32 @@ const MealSelectionStep = () => {
                   )}
                 </div>
 
+                {/* Fulfillment Toggle */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <button
+                    onClick={() => setFulfillmentMethod("delivery")}
+                    className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg border-2 transition-all text-xs font-medium font-campton min-h-[40px] ${
+                      fulfillmentMethod === "delivery"
+                        ? "bg-[#FF7C36] border-[#FF7C36] text-white"
+                        : "bg-white border-[#E0E0E0] text-[#868686] hover:border-[#FF7C36] hover:text-[#FF7C36] active:bg-[#FFF9F0]"
+                    }`}
+                  >
+                    <Truck className="w-3.5 h-3.5 flex-shrink-0" />
+                    Delivery
+                  </button>
+                  <button
+                    onClick={() => setFulfillmentMethod("pickup")}
+                    className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg border-2 transition-all text-xs font-medium font-campton min-h-[40px] ${
+                      fulfillmentMethod === "pickup"
+                        ? "bg-[#FF7C36] border-[#FF7C36] text-white"
+                        : "bg-white border-[#E0E0E0] text-[#868686] hover:border-[#FF7C36] hover:text-[#FF7C36] active:bg-[#FFF9F0]"
+                    }`}
+                  >
+                    <Store className="w-3.5 h-3.5 flex-shrink-0" />
+                    Pickup
+                  </button>
+                </div>
+
                 {/* Subtotal */}
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between items-center">
@@ -572,13 +600,15 @@ const MealSelectionStep = () => {
                     </span>
                   </div>
 
-                  {/* Delivery line — FREE or regular */}
+                  {/* Delivery/Pickup line */}
                   <div className="flex justify-between items-center">
                     <span className="font-campton text-[#868686] text-sm">
-                      Delivery
+                      {fulfillmentMethod === "pickup" ? "Pickup" : "Delivery"}
                     </span>
                     {mealsCount === 0 ? (
                       <span className="font-campton text-[#9B9B9B] text-sm">—</span>
+                    ) : fulfillmentMethod === "pickup" ? (
+                      <span className="font-campton text-green-600 text-sm font-semibold">FREE</span>
                     ) : deliveryIsFree ? (
                       <span className="font-campton text-green-600 text-sm font-semibold flex items-center gap-1">
                         FREE 🎉
@@ -632,7 +662,11 @@ const MealSelectionStep = () => {
                       {mealsCount > 0 && (
                         <p className="font-campton text-[#9B9B9B] text-xs mt-0.5">
                           ${subtotal.toFixed(2)} +{" "}
-                          {deliveryIsFree ? "FREE delivery" : `$${deliveryFee.toFixed(2)} delivery`}
+                          {fulfillmentMethod === "pickup"
+                            ? "FREE pickup"
+                            : deliveryIsFree
+                            ? "FREE delivery"
+                            : `$${deliveryFee.toFixed(2)} delivery`}
                         </p>
                       )}
                     </div>
@@ -642,7 +676,7 @@ const MealSelectionStep = () => {
                 <Button
                   onClick={nextStep}
                   disabled={mealsCount < MIN_ORDER_MEALS}
-                  className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton py-6 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white font-campton py-6 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {mealsCount < MIN_ORDER_MEALS ? (
                     <span>
