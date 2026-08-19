@@ -68,7 +68,6 @@ export function getWeekOptions(): WeekOption[] {
  * without any structural store changes.
  */
 export type FulfillmentMethod = "delivery" | "pickup";
-export type OrderType = "one-time" | "recurring";
 
 interface SubscriptionData {
   selectedWeek: WeekOption | null;

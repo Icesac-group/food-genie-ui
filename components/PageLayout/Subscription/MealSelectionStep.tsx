@@ -28,6 +28,9 @@ const MealCard = ({ meal, cartQty, image, onAdd, onRemove }: MealCardProps) => {
   const isAdded = cartQty > 0;
   const unavailable = meal.availability === false;
 
+  const increase = () => { setLocalQty((q) => q + 1); };
+  const decrease = () => { setLocalQty((q) => (q > 1 ? q - 1 : 1)); };
+
   return (
     <div
       className={`bg-white rounded-xl border-2 overflow-hidden flex flex-col transition-all ${

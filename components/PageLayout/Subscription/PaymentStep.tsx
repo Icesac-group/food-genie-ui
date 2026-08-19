@@ -27,8 +27,6 @@ const PaymentStep = () => {
   const isFreeDeliveryFn          = useDeliveryConfigStore((s) => s.isFreeDelivery);
   const pickupLocations           = useDeliveryConfigStore((s) => s.pickupLocations);
 
-  const isFreeDeliveryFn = useDeliveryConfigStore((s) => s.isFreeDelivery);
-
   const [formData, setFormData] = useState({ cardNumber: "", expiryDate: "", cvv: "", cardholderName: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
