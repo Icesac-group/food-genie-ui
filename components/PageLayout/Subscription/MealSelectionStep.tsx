@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useMemo } from "react";
 import Image, { StaticImageData } from "next/image";
-import { ArrowLeft, Plus, Minus, ShoppingBag, X, CalendarDays, ChevronRight } from "lucide-react";
+import { ArrowLeft, Plus, Minus, ShoppingBag, X, CalendarDays, ChevronRight, Truck, Store } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { useSubscriptionStore, getWeekOptions, WeekOption } from "@/store/subscriptionStore";
@@ -29,7 +29,14 @@ const MealCard = ({ meal, cartQty, image, onAdd, onRemove }: MealCardProps) => {
   const unavailable = meal.availability === false;
 
   return (
-    <div className={`bg-white rounded-xl border-2 overflow-hidden flex flex-col transition-all ${isAdded ? "border-[#FF7C36] shadow-md" : "border-[#E0E0E0] hover:border-[#FFB88C]"} ${unavailable ? "opacity-60" : ""}`}>
+    <div
+      className={`bg-white rounded-xl border-2 overflow-hidden flex flex-col transition-all ${
+        isAdded
+          ? "border-[#FF7C36] shadow-md"
+          : "border-[#E0E0E0] hover:border-[#FFB88C] hover:shadow-sm"
+      } ${unavailable ? "opacity-60" : ""}`}
+    >
+      {/* Image */}
       <div className="relative h-44 w-full flex-shrink-0">
         <Image src={image} alt={meal.name} fill className="object-cover" sizes="(max-width: 640px) 100vw, 50vw" />
         {isAdded && (
@@ -51,22 +58,51 @@ const MealCard = ({ meal, cartQty, image, onAdd, onRemove }: MealCardProps) => {
           <div className="flex items-center justify-between">
             <span className="font-campton text-[#868686] text-xs">Quantity</span>
             <div className="flex items-center gap-3">
-              <button onClick={() => setLocalQty((q) => Math.max(1, q - 1))} disabled={unavailable} className="w-8 h-8 rounded-md border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] transition-colors disabled:opacity-40" aria-label="Decrease">
+              <button
+                onClick={decrease}
+                disabled={unavailable}
+                className="w-9 h-9 rounded-md border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] active:bg-[#FFE5D0] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Decrease quantity"
+              >
                 <Minus className="w-3.5 h-3.5 text-[#FF7C36]" />
               </button>
-              <span className="font-campton text-[#222021] text-sm font-semibold w-5 text-center">{localQty}</span>
-              <button onClick={() => setLocalQty((q) => q + 1)} disabled={unavailable} className="w-8 h-8 rounded-md border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] transition-colors disabled:opacity-40" aria-label="Increase">
+              <span className="font-campton text-[#222021] text-sm font-semibold w-6 text-center">
+                {localQty}
+              </span>
+              <button
+                onClick={increase}
+                disabled={unavailable}
+                className="w-9 h-9 rounded-md border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] active:bg-[#FFE5D0] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                aria-label="Increase quantity"
+              >
                 <Plus className="w-3.5 h-3.5 text-[#FF7C36]" />
               </button>
             </div>
           </div>
           {isAdded ? (
             <div className="flex gap-2">
-              <button onClick={() => onAdd(localQty)} className="flex-1 py-2.5 rounded-lg bg-[#FF7C36] text-white font-campton text-sm font-medium hover:bg-[#FF6B1F] transition-colors">Update order</button>
-              <button onClick={onRemove} className="px-3 py-2.5 rounded-lg border border-[#E0E0E0] text-[#868686] hover:border-red-300 hover:text-red-400 transition-colors" aria-label="Remove"><X className="w-4 h-4" /></button>
+              <button
+                onClick={() => onAdd(localQty)}
+                className="flex-1 py-3 rounded-lg bg-[#FF7C36] text-white font-campton text-sm font-medium hover:bg-[#FF6B1F] active:bg-[#FF5500] transition-colors"
+              >
+                Update order
+              </button>
+              <button
+                onClick={onRemove}
+                className="px-3 py-3 rounded-lg border border-[#E0E0E0] text-[#868686] hover:border-red-300 hover:text-red-400 active:bg-red-50 transition-colors"
+                aria-label="Remove from order"
+              >
+                <X className="w-4 h-4" />
+              </button>
             </div>
           ) : (
-            <button onClick={() => !unavailable && onAdd(localQty)} disabled={unavailable} className="w-full py-2.5 rounded-lg bg-[#FF7C36] text-white font-campton text-sm font-medium hover:bg-[#FF6B1F] transition-colors disabled:opacity-40">Add to order</button>
+            <button
+              onClick={() => !unavailable && onAdd(localQty)}
+              disabled={unavailable}
+              className="w-full py-3 rounded-lg bg-[#FF7C36] text-white font-campton text-sm font-medium hover:bg-[#FF6B1F] active:bg-[#FF5500] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Add to order
+            </button>
           )}
         </div>
       </div>
@@ -89,6 +125,8 @@ const MealSelectionStep = () => {
   const getDeliveryFee     = useSubscriptionStore((s) => s.getDeliveryFee);
   const getMealsCount      = useSubscriptionStore((s) => s.getMealsCount);
   const nextStep           = useSubscriptionStore((s) => s.nextStep);
+  const fulfillmentMethod  = useSubscriptionStore((s) => s.fulfillmentMethod);
+  const setFulfillmentMethod = useSubscriptionStore((s) => s.setFulfillmentMethod);
 
   const isFreeDelivery        = useDeliveryConfigStore((s) => s.isFreeDelivery);
   const mealsUntilFree        = useDeliveryConfigStore((s) => s.mealsUntilFreeDelivery);
@@ -125,8 +163,13 @@ const MealSelectionStep = () => {
 
   return (
     <div className="p-6 md:p-12">
-      <button onClick={() => router.back()} className="flex items-center gap-2 text-[#868686] hover:text-[#FF7C36] transition-colors mb-6">
-        <ArrowLeft className="w-5 h-5" /><span className="font-campton text-sm">Back</span>
+      {/* Back */}
+      <button
+        onClick={() => router.back()}
+        className="flex items-center gap-2 text-[#868686] hover:text-[#FF7C36] active:text-[#FF6B1F] transition-colors mb-6 min-h-[44px]"
+      >
+        <ArrowLeft className="w-5 h-5" />
+        <span className="font-campton text-sm">Back</span>
       </button>
 
       <div className="text-center mb-8">
@@ -147,13 +190,52 @@ const MealSelectionStep = () => {
           {weekOptions.map((week) => {
             const isSelected = selectedWeek?.startDate === week.startDate;
             return (
-              <button key={week.startDate} onClick={() => !week.isClosed && setSelectedWeek(week)} disabled={week.isClosed}
-                className={`relative text-left p-4 rounded-xl border-2 transition-all ${week.isClosed ? "border-[#E0E0E0] bg-[#F9F9F9] opacity-60 cursor-not-allowed" : isSelected ? "border-[#FF7C36] bg-[#FFF9F0] shadow-md" : "border-[#E0E0E0] bg-white hover:border-[#FFB88C] cursor-pointer"}`}>
-                {week.isClosed && <span className="absolute -top-2.5 left-4 bg-[#868686] text-white font-campton text-xs px-2 py-0.5 rounded-full">Ordering closed</span>}
-                {!week.isClosed && week.label.startsWith("This Week") && <span className="absolute -top-2.5 left-4 bg-[#FF7C36] text-white font-campton text-xs px-2 py-0.5 rounded-full">This Week</span>}
-                {isSelected && !week.isClosed && <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#FF7C36] flex items-center justify-center"><span className="text-white text-xs">✓</span></div>}
-                <p className={`font-recoleta text-sm font-semibold mb-0.5 mt-1 ${isSelected && !week.isClosed ? "text-[#FF7C36]" : "text-[#222021]"}`}>Week of {week.weekOf}</p>
-                <p className="font-campton text-[#9B9B9B] text-xs mb-3">{week.label.split("  ")[1]?.replace(/[()]/g, "")}</p>
+              <button
+                key={week.startDate}
+                onClick={() => !week.isClosed && setSelectedWeek(week)}
+                disabled={week.isClosed}
+                className={`relative text-left p-4 rounded-xl border-2 transition-all ${
+                  week.isClosed
+                    ? "border-[#E0E0E0] bg-[#F9F9F9] opacity-60 cursor-not-allowed"
+                    : isSelected
+                    ? "border-[#FF7C36] bg-[#FFF9F0] shadow-md"
+                    : "border-[#E0E0E0] bg-white hover:border-[#FFB88C] hover:shadow-md active:scale-[0.98] cursor-pointer"
+                }`}
+              >
+                {/* Closed badge */}
+                {week.isClosed && (
+                  <span className="absolute -top-2.5 left-4 bg-[#868686] text-white font-campton text-xs px-2 py-0.5 rounded-full">
+                    Ordering closed
+                  </span>
+                )}
+
+                {/* This Week badge */}
+                {!week.isClosed && week.label.startsWith("This Week") && (
+                  <span className="absolute -top-2.5 left-4 bg-[#FF7C36] text-white font-campton text-xs px-2 py-0.5 rounded-full">
+                    This Week
+                  </span>
+                )}
+
+                {/* Selected tick */}
+                {isSelected && !week.isClosed && (
+                  <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#FF7C36] flex items-center justify-center">
+                    <span className="text-white text-xs">✓</span>
+                  </div>
+                )}
+
+                {/* Week of */}
+                <p className={`font-recoleta text-sm font-semibold mb-0.5 mt-1 ${
+                  isSelected && !week.isClosed ? "text-[#FF7C36]" : "text-[#222021]"
+                }`}>
+                  Week of {week.weekOf}
+                </p>
+
+                {/* Date range */}
+                <p className="font-campton text-[#9B9B9B] text-xs mb-3">
+                  {week.label.split("  ")[1]?.replace(/[()]/g, "")}
+                </p>
+
+                {/* Orders close */}
                 <div className={`text-xs font-campton ${week.isClosed ? "text-red-400" : "text-[#868686]"}`}>
                   <span className="font-medium">{week.isClosed ? "Orders closed" : "Orders close:"}</span>{" "}
                   {!week.isClosed && new Date(week.orderCloseDate).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
@@ -187,7 +269,17 @@ const MealSelectionStep = () => {
                 <p className="text-[#868686] text-xs mb-0.5">Delivery</p>
                 <p className="text-[#222021] font-medium text-xs">{selectedWeek.deliveryDays}</p>
               </div>
-              <button onClick={() => { const open = weekOptions.find((w) => !w.isClosed); if (open) setSelectedWeek(open); }} className="font-campton text-xs text-[#FF7C36] underline hover:text-[#FF6B1F] whitespace-nowrap">Change week</button>
+
+              {/* Change link */}
+              <button
+                onClick={() => {
+                  const open = weekOptions.find((w) => !w.isClosed);
+                  if (open) setSelectedWeek(open);
+                }}
+                className="font-campton text-xs text-[#FF7C36] underline hover:text-[#FF6B1F] active:text-[#FF5500] whitespace-nowrap self-start sm:self-auto min-h-[36px] px-1"
+              >
+                Change week
+              </button>
             </div>
           </div>
 
@@ -250,16 +342,44 @@ const MealSelectionStep = () => {
                         <div className="flex items-start justify-between gap-2 mb-2">
                           <p className="font-campton text-[#222021] text-sm font-medium leading-snug flex-1">{item.meal.name}</p>
                           <div className="flex items-center gap-1.5 flex-shrink-0">
-                            <span className="font-campton text-[#222021] text-sm font-semibold">${((item.meal.price * item.quantity) / 100).toFixed(2)}</span>
-                            <button onClick={() => removeMeal(item.meal._id)} className="text-[#CCCCCC] hover:text-red-400 transition-colors" aria-label={`Remove ${item.meal.name}`}><X className="w-3.5 h-3.5" /></button>
+                            <span className="font-campton text-[#222021] text-sm font-semibold">
+                              ${((item.meal.price * item.quantity) / 100).toFixed(2)}
+                            </span>
+                            <button
+                              onClick={() => removeMeal(item.meal._id)}
+                              className="text-[#CCCCCC] hover:text-red-400 active:text-red-500 transition-colors p-1 rounded"
+                              aria-label={`Remove ${item.meal.name}`}
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
                           </div>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="font-campton text-[#9B9B9B] text-xs">${(item.meal.price / 100).toFixed(2)} each</span>
                           <div className="flex items-center gap-2">
-                            <button onClick={() => item.quantity === 1 ? removeMeal(item.meal._id) : updateMealQuantity(item.meal._id, item.quantity - 1)} className="w-6 h-6 rounded border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] transition-colors" aria-label="Decrease"><Minus className="w-3 h-3 text-[#FF7C36]" /></button>
-                            <span className="font-campton text-[#222021] text-sm font-semibold w-5 text-center">{item.quantity}</span>
-                            <button onClick={() => updateMealQuantity(item.meal._id, item.quantity + 1)} className="w-6 h-6 rounded border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] transition-colors" aria-label="Increase"><Plus className="w-3 h-3 text-[#FF7C36]" /></button>
+                            <button
+                              onClick={() =>
+                                item.quantity === 1
+                                  ? removeMeal(item.meal._id)
+                                  : updateMealQuantity(item.meal._id, item.quantity - 1)
+                              }
+                              className="w-8 h-8 rounded border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] active:bg-[#FFE5D0] transition-colors"
+                              aria-label="Decrease"
+                            >
+                              <Minus className="w-3 h-3 text-[#FF7C36]" />
+                            </button>
+                            <span className="font-campton text-[#222021] text-sm font-semibold w-5 text-center">
+                              {item.quantity}
+                            </span>
+                            <button
+                              onClick={() =>
+                                updateMealQuantity(item.meal._id, item.quantity + 1)
+                              }
+                              className="w-8 h-8 rounded border border-[#E0E0E0] flex items-center justify-center hover:border-[#FF7C36] hover:bg-[#FFF9F0] active:bg-[#FFE5D0] transition-colors"
+                              aria-label="Increase"
+                            >
+                              <Plus className="w-3 h-3 text-[#FF7C36]" />
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -279,17 +399,57 @@ const MealSelectionStep = () => {
                   {mealsCount < MIN_ORDER_MEALS && <p className="font-campton text-[#9B9B9B] text-xs mt-1.5">Add {MIN_ORDER_MEALS - mealsCount} more {MIN_ORDER_MEALS - mealsCount === 1 ? "meal" : "meals"} to continue</p>}
                 </div>
 
-                {/* Pricing */}
+                {/* Fulfillment Toggle */}
+                <div className="grid grid-cols-2 gap-2 mb-4">
+                  <button
+                    onClick={() => setFulfillmentMethod("delivery")}
+                    className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg border-2 transition-all text-xs font-medium font-campton min-h-[40px] ${
+                      fulfillmentMethod === "delivery"
+                        ? "bg-[#FF7C36] border-[#FF7C36] text-white"
+                        : "bg-white border-[#E0E0E0] text-[#868686] hover:border-[#FF7C36] hover:text-[#FF7C36] active:bg-[#FFF9F0]"
+                    }`}
+                  >
+                    <Truck className="w-3.5 h-3.5 flex-shrink-0" />
+                    Delivery
+                  </button>
+                  <button
+                    onClick={() => setFulfillmentMethod("pickup")}
+                    className={`flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg border-2 transition-all text-xs font-medium font-campton min-h-[40px] ${
+                      fulfillmentMethod === "pickup"
+                        ? "bg-[#FF7C36] border-[#FF7C36] text-white"
+                        : "bg-white border-[#E0E0E0] text-[#868686] hover:border-[#FF7C36] hover:text-[#FF7C36] active:bg-[#FFF9F0]"
+                    }`}
+                  >
+                    <Store className="w-3.5 h-3.5 flex-shrink-0" />
+                    Pickup
+                  </button>
+                </div>
+
+                {/* Subtotal */}
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between items-center">
                     <span className="font-campton text-[#868686] text-sm">Subtotal</span>
                     <span className="font-campton text-[#222021] text-sm font-semibold">${subtotal.toFixed(2)}</span>
                   </div>
+
+                  {/* Delivery/Pickup line */}
                   <div className="flex justify-between items-center">
-                    <span className="font-campton text-[#868686] text-sm">Delivery</span>
-                    {mealsCount === 0 ? <span className="font-campton text-[#9B9B9B] text-sm">—</span>
-                      : deliveryIsFree ? <span className="font-campton text-green-600 text-sm font-semibold">FREE 🎉</span>
-                      : <span className="font-campton text-[#222021] text-sm">${deliveryFee.toFixed(2)}</span>}
+                    <span className="font-campton text-[#868686] text-sm">
+                      {fulfillmentMethod === "pickup" ? "Pickup" : "Delivery"}
+                    </span>
+                    {mealsCount === 0 ? (
+                      <span className="font-campton text-[#9B9B9B] text-sm">—</span>
+                    ) : fulfillmentMethod === "pickup" ? (
+                      <span className="font-campton text-green-600 text-sm font-semibold">FREE</span>
+                    ) : deliveryIsFree ? (
+                      <span className="font-campton text-green-600 text-sm font-semibold flex items-center gap-1">
+                        FREE 🎉
+                      </span>
+                    ) : (
+                      <span className="font-campton text-[#222021] text-sm">
+                        ${deliveryFee.toFixed(2)}
+                      </span>
+                    )}
                   </div>
                   {freeDeliveryEnabled && mealsCount > 0 && !deliveryIsFree && (
                     <div className="bg-[#FFF9F0] border border-[#FFD4B3] rounded-lg px-3 py-2">
@@ -310,13 +470,28 @@ const MealSelectionStep = () => {
                   <div className="flex justify-between items-baseline">
                     <span className="font-recoleta text-[#222021] text-lg font-bold">Total</span>
                     <div className="text-right">
-                      <span className="font-recoleta text-[#FF7C36] text-2xl font-bold">${mealsCount === 0 ? "0.00" : total.toFixed(2)}</span>
-                      {mealsCount > 0 && <p className="font-campton text-[#9B9B9B] text-xs mt-0.5">${subtotal.toFixed(2)} + {deliveryIsFree ? "FREE delivery" : `$${deliveryFee.toFixed(2)} delivery`}</p>}
+                      <span className="font-recoleta text-[#FF7C36] text-2xl font-bold">
+                        ${mealsCount === 0 ? "0.00" : total.toFixed(2)}
+                      </span>
+                      {mealsCount > 0 && (
+                        <p className="font-campton text-[#9B9B9B] text-xs mt-0.5">
+                          ${subtotal.toFixed(2)} +{" "}
+                          {fulfillmentMethod === "pickup"
+                            ? "FREE pickup"
+                            : deliveryIsFree
+                            ? "FREE delivery"
+                            : `$${deliveryFee.toFixed(2)} delivery`}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
 
-                <Button onClick={nextStep} disabled={mealsCount < MIN_ORDER_MEALS} className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton py-6 text-sm disabled:opacity-50 disabled:cursor-not-allowed">
+                <Button
+                  onClick={nextStep}
+                  disabled={mealsCount < MIN_ORDER_MEALS}
+                  className="w-full bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white font-campton py-6 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                >
                   {mealsCount < MIN_ORDER_MEALS ? (
                     <span>{mealsCount === 0 ? `Select ${MIN_ORDER_MEALS} meals to continue` : `Add ${MIN_ORDER_MEALS - mealsCount} more to continue`}</span>
                   ) : (

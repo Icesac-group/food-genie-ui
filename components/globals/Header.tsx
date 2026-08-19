@@ -61,7 +61,9 @@ const Header = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="sm:hidden p-2 text-gray-600 hover:text-gray-900"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+            className="sm:hidden p-2 rounded-lg text-gray-600 hover:text-[#FF7C36] hover:bg-orange-50 active:bg-orange-100 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
           >
             {mobileMenuOpen ? (
               <X className="h-6 w-6" />
@@ -84,10 +86,10 @@ const Header = () => {
                   key={item.name}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`block py-3 px-8 text-base font-medium font-campton transition-colors hover:bg-gray-50 ${
+                  className={`block py-3 px-8 text-base font-medium font-campton transition-colors hover:bg-orange-50 active:bg-orange-100 min-h-[48px] flex items-center ${
                     isActive(item.href)
                       ? "text-[#FF7C36] bg-orange-50 border-l-4 border-[#FF7C36]"
-                      : "text-gray-600"
+                      : "text-gray-600 hover:text-[#FF7C36]"
                   }`}
                 >
                   {item.name}

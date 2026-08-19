@@ -43,13 +43,13 @@ const Pagination = ({
   return (
     <div className="flex items-center justify-center gap-0 bg-white rounded-xl shadow-md overflow-hidden w-fit mx-auto">
       {/* Previous Button */}
-      <button
+              <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`px-6 py-2 font-campton text-base transition-colors ${
+        className={`px-6 py-3 font-campton text-base transition-colors min-h-[44px] ${
           currentPage === 1
             ? "text-gray-300 cursor-not-allowed bg-white"
-            : "text-[#FF7C36] hover:bg-gray-50 bg-white"
+            : "text-[#FF7C36] hover:bg-orange-50 active:bg-orange-100 bg-white"
         }`}
       >
         Previous
@@ -68,10 +68,10 @@ const Pagination = ({
           <button
             key={page}
             onClick={() => onPageChange(page as number)}
-            className={`min-w-[60px] px-2 py-2 font-campton text-base transition-colors ${
+            className={`min-w-[44px] min-h-[44px] px-2 py-2 font-campton text-base transition-colors ${
               currentPage === page
                 ? "bg-[#FF7C36] text-white font-medium"
-                : "bg-white text-[#9B9B9B] hover:bg-gray-50"
+                : "bg-white text-[#9B9B9B] hover:bg-orange-50 active:bg-orange-100"
             }`}
           >
             {page}
@@ -83,10 +83,10 @@ const Pagination = ({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`px-6 py-2 font-campton text-base transition-colors ${
+        className={`px-6 py-3 font-campton text-base transition-colors min-h-[44px] ${
           currentPage === totalPages
             ? "text-gray-300 cursor-not-allowed bg-white"
-            : "text-[#FF7C36] hover:bg-gray-50 bg-white"
+            : "text-[#FF7C36] hover:bg-orange-50 active:bg-orange-100 bg-white"
         }`}
       >
         Next

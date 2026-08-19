@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Meal } from "@/lib/data/mealsData";
 
+export type FulfillmentMethod = "delivery" | "pickup";
+
 export interface CartItem {
   meal: Meal;
   quantity: number;
@@ -11,6 +13,8 @@ export interface CartItem {
 
 interface MealsStore {
   cart: CartItem[];
+  fulfillmentMethod: FulfillmentMethod;
+  setFulfillmentMethod: (method: FulfillmentMethod) => void;
   addToCart: (meal: Meal, quantity: number, preferences?: string) => void;
   removeFromCart: (cartItemId: string) => void;
   updateCartItemQuantity: (cartItemId: string, quantity: number) => void;
@@ -26,6 +30,9 @@ export const useMealsStore = create<MealsStore>()(
   persist(
     (set, get) => ({
       cart: [],
+      fulfillmentMethod: "delivery" as FulfillmentMethod,
+
+      setFulfillmentMethod: (method) => set({ fulfillmentMethod: method }),
 
       addToCart: (meal: any, quantity, preferences) => {
         set((state) => {
@@ -34,7 +41,7 @@ export const useMealsStore = create<MealsStore>()(
             meal,
             quantity,
             preferences: preferences || undefined, // Ensure it's stored
-            id: `${meal.id}-${Date.now()}`,
+            id: `${meal._id}-${Date.now()}`,
           };
 
           return {
@@ -84,6 +91,7 @@ export const useMealsStore = create<MealsStore>()(
       },
 
       getDeliveryFee: () => {
+        if (get().fulfillmentMethod === "pickup") return 0;
         return 399; // $3.99 in cents
       },
 

@@ -61,15 +61,32 @@ export function getWeekOptions(): WeekOption[] {
   return options;
 }
 
+/**
+ * Order type — "one-time" is the default for the current implementation.
+ * "recurring" is reserved for future weekly repeat functionality.
+ * Adding it to the store now means the UI toggle can be wired up later
+ * without any structural store changes.
+ */
+export type FulfillmentMethod = "delivery" | "pickup";
+export type OrderType = "one-time" | "recurring";
+
 interface SubscriptionData {
   selectedWeek: WeekOption | null;
   selectedMeals: SelectedMealItem[];
   orderType: OrderType;
+
+  // Step 3: Fulfillment — delivery or pickup
+  fulfillmentMethod: FulfillmentMethod;
+  selectedPickupLocationId: string | null; // only used when fulfillmentMethod === "pickup"
+  deliveryAddress: string;                 // only used when fulfillmentMethod === "delivery"
+
+  // Step 2: Register
   email: string;
   phoneNumber: string;
   password: string;
   agreedToTerms: boolean;
-  deliveryAddress: string;
+
+  // Step 4: Payment
   paymentMethod: "card" | null;
   cardNumber: string;
   expiryDate: string;
@@ -84,6 +101,11 @@ interface SubscriptionStore extends SubscriptionData {
   setSelectedWeek: (week: WeekOption) => void;
   setOrderType: (type: OrderType) => void;
 
+  // Fulfillment method
+  setFulfillmentMethod: (method: FulfillmentMethod) => void;
+  setSelectedPickupLocationId: (id: string | null) => void;
+
+  // Meal selection
   addMeal: (meal: Meal) => void;
   removeMeal: (mealId: string) => void;
   updateMealQuantity: (mealId: string, quantity: number) => void;
@@ -122,6 +144,8 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       selectedWeek: null,
       selectedMeals: [],
       orderType: "one-time",
+      fulfillmentMethod: "delivery",
+      selectedPickupLocationId: null,
       email: "",
       phoneNumber: "",
       password: "",
@@ -135,6 +159,12 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
 
       setSelectedWeek: (week) => set({ selectedWeek: week, selectedMeals: [] }),
       setOrderType: (type) => set({ orderType: type }),
+
+      setFulfillmentMethod: (method) =>
+        set({ fulfillmentMethod: method, selectedPickupLocationId: null }),
+
+      setSelectedPickupLocationId: (id) =>
+        set({ selectedPickupLocationId: id }),
 
       addMeal: (meal) =>
         set((state) => {
@@ -179,7 +209,13 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
       getMealsCount: () =>
         get().selectedMeals.reduce((count, item) => count + item.quantity, 0),
 
+      /**
+       * Returns 0 for pickup orders.
+       * For delivery, delegates to deliveryConfigStore (admin-configured fee
+       * with optional free-delivery threshold).
+       */
       getDeliveryFee: () => {
+        if (get().fulfillmentMethod === "pickup") return 0;
         const mealsCount = get().selectedMeals.reduce(
           (count, item) => count + item.quantity,
           0
@@ -213,6 +249,8 @@ export const useSubscriptionStore = create<SubscriptionStore>()(
           selectedWeek: null,
           selectedMeals: [],
           orderType: "one-time",
+          fulfillmentMethod: "delivery",
+          selectedPickupLocationId: null,
           email: "",
           phoneNumber: "",
           password: "",

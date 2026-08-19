@@ -116,7 +116,7 @@ const WeeklyHero = () => {
 
                 <Button
                   onClick={() => router.push("/subscribe")}
-                  className="bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton px-8 py-6 rounded-lg"
+                  className="bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white font-campton px-8 py-6 rounded-lg"
                   size="sm"
                 >
                   Build Your Week
