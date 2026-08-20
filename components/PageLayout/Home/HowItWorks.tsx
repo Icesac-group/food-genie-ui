@@ -96,8 +96,8 @@ const HowItWorks = () => {
             Fresh, delicious, and delivered straight to your doorstep.
           </p>
           <Button
-            onClick={() => router.push("/signup")}
-            className="bg-[#FF7C36] hover:bg-[#FF6B1F] text-white text-base font-campton font-medium px-4 py-6 w-[220px] rounded-lg"
+            onClick={() => router.push("/subscribe")}
+            className="bg-[#FF7C36] hover:bg-[#FF6B1F] text-white text-base font-campton font-medium px-4 py-6 w-[220px] rounded-lg cursor-pointer active:scale-95"
             size="lg"
           >
             Get Started
