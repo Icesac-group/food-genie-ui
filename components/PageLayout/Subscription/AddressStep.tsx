@@ -20,23 +20,23 @@ import { DropoffOption } from "@/store/deliveryStore";
 type ApartmentType = "house" | "apartment" | "office" | "hotel" | "other" | "";
 
 const AddressStep = () => {
-  const previousStep            = useSubscriptionStore((s) => s.previousStep);
-  const nextStep                = useSubscriptionStore((s) => s.nextStep);
-  const setDeliveryAddress      = useSubscriptionStore((s) => s.setDeliveryAddress);
-  const fulfillmentMethod       = useSubscriptionStore((s) => s.fulfillmentMethod);
-  const setFulfillmentMethod    = useSubscriptionStore((s) => s.setFulfillmentMethod);
+  const previousStep = useSubscriptionStore((s) => s.previousStep);
+  const nextStep = useSubscriptionStore((s) => s.nextStep);
+  const setDeliveryAddress = useSubscriptionStore((s) => s.setDeliveryAddress);
+  const fulfillmentMethod = useSubscriptionStore((s) => s.fulfillmentMethod);
+  const setFulfillmentMethod = useSubscriptionStore((s) => s.setFulfillmentMethod);
   const selectedPickupLocationId = useSubscriptionStore((s) => s.selectedPickupLocationId);
   const setSelectedPickupLocationId = useSubscriptionStore((s) => s.setSelectedPickupLocationId);
 
-  const pickupEnabled           = useDeliveryConfigStore((s) => s.pickupEnabled);
-  const setPickupEnabled        = useDeliveryConfigStore((s) => s.setPickupEnabled);
+  const pickupEnabled = useDeliveryConfigStore((s) => s.pickupEnabled);
+  const setPickupEnabled = useDeliveryConfigStore((s) => s.setPickupEnabled);
   const getActivePickupLocations = useDeliveryConfigStore((s) => s.getActivePickupLocations);
-  const activePickupLocations   = getActivePickupLocations();
+  const activePickupLocations = getActivePickupLocations();
 
   // Ensure pickup is always enabled so the toggle works
   useEffect(() => {
     if (!pickupEnabled) setPickupEnabled(true);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Delivery form state ────────────────────────────────────────────────────
@@ -141,11 +141,10 @@ const AddressStep = () => {
           {/* Delivery option */}
           <button
             onClick={() => setFulfillmentMethod("delivery")}
-            className={`flex flex-col items-center gap-2 p-5 rounded-xl border-2 transition-all min-h-[120px] ${
-              fulfillmentMethod === "delivery"
+            className={`flex flex-col items-center gap-2 p-5 rounded-xl border-2 transition-all min-h-[120px] ${fulfillmentMethod === "delivery"
                 ? "border-[#FF7C36] bg-[#FFF9F0] shadow-md"
                 : "border-[#E0E0E0] bg-white hover:border-[#FFB88C] hover:shadow-sm active:bg-[#FFF9F0]"
-            }`}
+              }`}
           >
             <div className={`w-12 h-12 rounded-full flex items-center justify-center ${fulfillmentMethod === "delivery" ? "bg-[#FF7C36]" : "bg-[#F0F0F0]"}`}>
               <Truck className={`w-6 h-6 ${fulfillmentMethod === "delivery" ? "text-white" : "text-[#868686]"}`} />
@@ -164,11 +163,10 @@ const AddressStep = () => {
           {/* Pickup option */}
           <button
             onClick={() => setFulfillmentMethod("pickup")}
-            className={`flex flex-col items-center gap-2 p-5 rounded-xl border-2 transition-all min-h-[120px] ${
-              fulfillmentMethod === "pickup"
+            className={`flex flex-col items-center gap-2 p-5 rounded-xl border-2 transition-all min-h-[120px] ${fulfillmentMethod === "pickup"
                 ? "border-[#FF7C36] bg-[#FFF9F0] shadow-md"
                 : "border-[#E0E0E0] bg-white hover:border-[#FFB88C] hover:shadow-sm active:bg-[#FFF9F0]"
-            }`}
+              }`}
           >
             <div className={`w-12 h-12 rounded-full flex items-center justify-center ${fulfillmentMethod === "pickup" ? "bg-[#FF7C36]" : "bg-[#F0F0F0]"}`}>
               <Store className={`w-6 h-6 ${fulfillmentMethod === "pickup" ? "text-white" : "text-[#868686]"}`} />
@@ -337,11 +335,10 @@ const AddressStep = () => {
                     <button
                       key={location.id}
                       onClick={() => setSelectedPickupLocationId(location.id)}
-                      className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
-                        isSelected
+                      className={`w-full text-left p-4 rounded-xl border-2 transition-all ${isSelected
                           ? "border-[#FF7C36] bg-[#FFF9F0] shadow-md"
                           : "border-[#E0E0E0] bg-white hover:border-[#FFB88C] hover:shadow-sm active:bg-[#FFF9F0]"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">

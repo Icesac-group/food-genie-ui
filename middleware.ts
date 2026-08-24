@@ -23,8 +23,8 @@ function isPublic(pathname: string): boolean {
     return true;
   }
 
-  // Check if it matches /meals/:id pattern (numeric IDs)
-  if (pathname.match(/^\/meals\/\d+$/)) {
+  // Check if it matches /meals/:id pattern (any alphanumeric ID including MongoDB ObjectIds)
+  if (pathname.match(/^\/meals\/[a-zA-Z0-9]+$/)) {
     return true;
   }
 

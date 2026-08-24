@@ -132,7 +132,7 @@ const FAQ = () => {
                     setActiveCategory(category);
                     setOpenQuestion(null);
                   }}
-                  className={`relative w-full text-left py-3 font-campton text-base transition-all flex items-center gap-3 ${
+                  className={`relative w-full text-left py-3 font-campton text-base transition-all flex items-center gap-3 cursor-pointer active:scale-95 ${
                     activeCategory === category
                       ? "text-[#222021] font-medium"
                       : "text-[#B8B8B8] hover:text-[#222021]"
@@ -174,7 +174,7 @@ const FAQ = () => {
                   >
                     <button
                       onClick={() => toggleQuestion(index)}
-                      className="w-full h-[60px] flex items-center justify-between px-6 md:px-8 py-5 md:py-6 text-left"
+                      className="w-full h-[60px] flex items-center justify-between px-6 md:px-8 py-5 md:py-6 text-left cursor-pointer active:scale-[0.99] transition-transform"
                     >
                       <h3 className="font-campton text-[#222021] text-base md:text-lg font-medium pr-4">
                         {faq.question}

@@ -13,30 +13,30 @@ import { toast } from "sonner";
 const PaymentStep = () => {
   const router = useRouter();
 
-  const previousStep              = useSubscriptionStore((s) => s.previousStep);
-  const selectedMeals             = useSubscriptionStore((s) => s.selectedMeals);
-  const getMealsSubtotal          = useSubscriptionStore((s) => s.getMealsSubtotal);
-  const getDeliveryFee            = useSubscriptionStore((s) => s.getDeliveryFee);
-  const getOrderTotal             = useSubscriptionStore((s) => s.getOrderTotal);
-  const getMealsCount             = useSubscriptionStore((s) => s.getMealsCount);
-  const setPaymentData            = useSubscriptionStore((s) => s.setPaymentData);
-  const completeSubscription      = useSubscriptionStore((s) => s.completeSubscription);
-  const fulfillmentMethod         = useSubscriptionStore((s) => s.fulfillmentMethod);
-  const selectedPickupLocationId  = useSubscriptionStore((s) => s.selectedPickupLocationId);
+  const previousStep = useSubscriptionStore((s) => s.previousStep);
+  const selectedMeals = useSubscriptionStore((s) => s.selectedMeals);
+  const getMealsSubtotal = useSubscriptionStore((s) => s.getMealsSubtotal);
+  const getDeliveryFee = useSubscriptionStore((s) => s.getDeliveryFee);
+  const getOrderTotal = useSubscriptionStore((s) => s.getOrderTotal);
+  const getMealsCount = useSubscriptionStore((s) => s.getMealsCount);
+  const setPaymentData = useSubscriptionStore((s) => s.setPaymentData);
+  const completeSubscription = useSubscriptionStore((s) => s.completeSubscription);
+  const fulfillmentMethod = useSubscriptionStore((s) => s.fulfillmentMethod);
+  const selectedPickupLocationId = useSubscriptionStore((s) => s.selectedPickupLocationId);
 
-  const isFreeDeliveryFn          = useDeliveryConfigStore((s) => s.isFreeDelivery);
-  const pickupLocations           = useDeliveryConfigStore((s) => s.pickupLocations);
+  const isFreeDeliveryFn = useDeliveryConfigStore((s) => s.isFreeDelivery);
+  const pickupLocations = useDeliveryConfigStore((s) => s.pickupLocations);
 
   const [formData, setFormData] = useState({ cardNumber: "", expiryDate: "", cvv: "", cardholderName: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const subtotal   = getMealsSubtotal() / 100;
-  const fee        = getDeliveryFee() / 100;   // 0 for pickup, or 0 if free delivery threshold met
-  const total      = getOrderTotal() / 100;
+  const subtotal = getMealsSubtotal() / 100;
+  const fee = getDeliveryFee() / 100;   // 0 for pickup, or 0 if free delivery threshold met
+  const total = getOrderTotal() / 100;
   const mealsCount = getMealsCount();
 
-  const isPickup       = fulfillmentMethod === "pickup";
-  const feeIsFree      = isPickup || isFreeDeliveryFn(mealsCount);
+  const isPickup = fulfillmentMethod === "pickup";
+  const feeIsFree = isPickup || isFreeDeliveryFn(mealsCount);
   const selectedPickup = pickupLocations.find((l) => l.id === selectedPickupLocationId);
 
   const getFirstDeliveryDate = () => {

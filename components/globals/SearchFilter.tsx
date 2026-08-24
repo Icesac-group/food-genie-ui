@@ -197,7 +197,7 @@ const SearchFilter = ({
           <button
             key={category}
             onClick={() => onCategoryChange(category)}
-            className={`px-4 py-2 font-campton text-sm transition-colors ${
+            className={`px-4 py-2 font-campton text-sm transition-colors cursor-pointer active:scale-95 ${
               selectedCategory === category
                 ? "text-[#FF7C36] border-b-2 border-[#FF7C36] font-medium"
                 : "text-[#B0B0B0] hover:text-[#FF7C36]"
@@ -215,7 +215,7 @@ const SearchFilter = ({
             <button
               key={tag}
               onClick={() => removeFilter("tag", tag)}
-              className="px-3 py-1.5 bg-[#FFE5B4] text-[#FF7C36] rounded-full font-campton text-xs font-medium flex items-center gap-2 hover:bg-[#FFD4A3] transition-colors"
+              className="px-3 py-1.5 bg-[#FFE5B4] text-[#FF7C36] rounded-full font-campton text-xs font-medium flex items-center gap-2 hover:bg-[#FFD4A3] transition-colors cursor-pointer active:scale-95"
             >
               {tag}
               <X className="w-3 h-3" />
@@ -225,7 +225,7 @@ const SearchFilter = ({
             <button
               key={diet}
               onClick={() => removeFilter("dietary", diet)}
-              className="px-3 py-1.5 bg-[#E5F3FF] text-[#0066CC] rounded-full font-campton text-xs font-medium flex items-center gap-2 hover:bg-[#CCE5FF] transition-colors"
+              className="px-3 py-1.5 bg-[#E5F3FF] text-[#0066CC] rounded-full font-campton text-xs font-medium flex items-center gap-2 hover:bg-[#CCE5FF] transition-colors cursor-pointer active:scale-95"
             >
               {diet}
               <X className="w-3 h-3" />

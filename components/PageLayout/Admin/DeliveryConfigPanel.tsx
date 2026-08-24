@@ -57,7 +57,7 @@ const LocationForm = ({ initial, onSave, onCancel }: LocationFormProps) => {
       </div>
       <div className="flex items-center justify-between">
         <span className="font-campton text-[#222021] text-sm">Active</span>
-        <button onClick={() => setForm((p) => ({ ...p, active: !p.active }))}>
+        <button onClick={() => setForm((p) => ({ ...p, active: !p.active }))} className="cursor-pointer active:scale-95">
           {form.active
             ? <ToggleRight className="w-9 h-9 text-green-500" />
             : <ToggleLeft  className="w-9 h-9 text-[#CCCCCC]" />}
@@ -67,7 +67,7 @@ const LocationForm = ({ initial, onSave, onCancel }: LocationFormProps) => {
         <Button onClick={handleSave} className="bg-[#FF7C36] hover:bg-[#FF6B1F] text-white font-campton text-sm px-5">
           Save location
         </Button>
-        <button onClick={onCancel} className="font-campton text-[#868686] text-sm hover:text-[#222021] px-3">
+        <button onClick={onCancel} className="font-campton text-[#868686] text-sm hover:text-[#222021] px-3 cursor-pointer active:scale-95">
           Cancel
         </button>
       </div>
@@ -167,7 +167,7 @@ const DeliveryConfigPanel = () => {
                 {draft.enabled ? "Customers get free delivery when they reach the minimum" : "All delivery orders are charged the standard fee"}
               </p>
             </div>
-            <button onClick={() => update({ enabled: !draft.enabled })} className="flex items-center gap-2 focus:outline-none">
+            <button onClick={() => update({ enabled: !draft.enabled })} className="flex items-center gap-2 focus:outline-none cursor-pointer active:scale-95">
               <span className={`font-campton text-xs font-semibold ${draft.enabled ? "text-green-600" : "text-[#868686]"}`}>
                 {draft.enabled ? "ON" : "OFF"}
               </span>
@@ -184,7 +184,7 @@ const DeliveryConfigPanel = () => {
             <div className="flex gap-2 flex-wrap mb-4">
               {PRESETS.map((n) => (
                 <button key={n} onClick={() => update({ threshold: n })}
-                  className={`px-4 py-1.5 rounded-full font-campton text-sm border transition-colors ${draft.threshold === n ? "bg-[#FF7C36] border-[#FF7C36] text-white" : "border-[#E0E0E0] text-[#868686] hover:border-[#FF7C36] hover:text-[#FF7C36]"}`}>
+                  className={`px-4 py-1.5 rounded-full font-campton text-sm border transition-colors cursor-pointer active:scale-95 ${draft.threshold === n ? "bg-[#FF7C36] border-[#FF7C36] text-white" : "border-[#E0E0E0] text-[#868686] hover:border-[#FF7C36] hover:text-[#FF7C36]"}`}>
                   {n} meals
                 </button>
               ))}
@@ -235,7 +235,7 @@ const DeliveryConfigPanel = () => {
               <Save className="w-4 h-4 mr-2" />Save changes
             </Button>
             {dirty && (
-              <button onClick={handleResetDelivery} className="flex items-center gap-1.5 font-campton text-[#868686] text-sm hover:text-[#222021] transition-colors">
+              <button onClick={handleResetDelivery} className="flex items-center gap-1.5 font-campton text-[#868686] text-sm hover:text-[#222021] transition-colors cursor-pointer active:scale-95">
                 <RotateCcw className="w-3.5 h-3.5" />Discard
               </button>
             )}
@@ -269,7 +269,7 @@ const DeliveryConfigPanel = () => {
                 {pickupEnabled ? "Customers can choose pickup at checkout" : "Pickup option is hidden from customers"}
               </p>
             </div>
-            <button onClick={() => setPickupEnabled(!pickupEnabled)} className="flex items-center gap-2 focus:outline-none">
+            <button onClick={() => setPickupEnabled(!pickupEnabled)} className="flex items-center gap-2 focus:outline-none cursor-pointer active:scale-95">
               <span className={`font-campton text-xs font-semibold ${pickupEnabled ? "text-green-600" : "text-[#868686]"}`}>
                 {pickupEnabled ? "ON" : "OFF"}
               </span>
@@ -283,7 +283,7 @@ const DeliveryConfigPanel = () => {
               <Label className="font-campton text-[#222021] text-sm font-semibold">Pickup Locations</Label>
               {!showAddForm && (
                 <button onClick={() => { setShowAddForm(true); setEditingId(null); }}
-                  className="flex items-center gap-1.5 font-campton text-[#FF7C36] text-sm hover:underline">
+                  className="flex items-center gap-1.5 font-campton text-[#FF7C36] text-sm hover:underline cursor-pointer active:scale-95">
                   <Plus className="w-4 h-4" />Add location
                 </button>
               )}
@@ -299,7 +299,7 @@ const DeliveryConfigPanel = () => {
               <div className="border border-dashed border-[#E0E0E0] rounded-xl py-8 text-center">
                 <Store className="w-8 h-8 text-[#E0E0E0] mx-auto mb-2" />
                 <p className="font-campton text-[#9B9B9B] text-sm">No pickup locations yet</p>
-                <button onClick={() => setShowAddForm(true)} className="font-campton text-[#FF7C36] text-xs underline mt-1">Add your first location</button>
+                <button onClick={() => setShowAddForm(true)} className="font-campton text-[#FF7C36] text-xs underline mt-1 cursor-pointer active:scale-95">Add your first location</button>
               </div>
             ) : (
               <div className="space-y-3">
@@ -336,10 +336,10 @@ const DeliveryConfigPanel = () => {
                             )}
                           </div>
                           <div className="flex gap-2 flex-shrink-0">
-                            <button onClick={() => { setEditingId(loc.id); setShowAddForm(false); }} className="text-[#868686] hover:text-[#FF7C36] transition-colors">
+                            <button onClick={() => { setEditingId(loc.id); setShowAddForm(false); }} className="text-[#868686] hover:text-[#FF7C36] transition-colors cursor-pointer active:scale-95">
                               <Pencil className="w-4 h-4" />
                             </button>
-                            <button onClick={() => handleRemove(loc.id)} className="text-[#868686] hover:text-red-400 transition-colors">
+                            <button onClick={() => handleRemove(loc.id)} className="text-[#868686] hover:text-red-400 transition-colors cursor-pointer active:scale-95">
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
