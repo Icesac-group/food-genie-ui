@@ -1,15 +1,27 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { images } from "@/public/images/images";
 import { Menu, X } from "lucide-react";
 
 const Header = () => {
   const { logo } = images();
   const pathname = usePathname();
+  const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Check if user is authenticated by looking for accessToken cookie
+  useEffect(() => {
+    const hasAccessToken = document.cookie
+      .split("; ")
+      .some((row) => row.startsWith("accessToken="));
+    setIsAuthenticated(hasAccessToken);
+    setMounted(true);
+  }, []);
 
   const navItems = [
     { name: "Home", href: "/home" },
@@ -20,6 +32,13 @@ const Header = () => {
 
   const isActive = (href: string) => {
     return pathname === href;
+  };
+
+  const handleLogout = () => {
+    // Clear the accessToken cookie
+    document.cookie = "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+    setIsAuthenticated(false);
+    router.push("/home");
   };
 
   return (
@@ -58,18 +77,29 @@ const Header = () => {
 
           {/* Auth Buttons */}
           <div className="hidden sm:flex items-center gap-4">
-            <Link
-              href="/login"
-              className="text-sm font-campton font-medium text-[#222021] hover:text-[#FF7C36] transition-colors"
-            >
-              Log In
-            </Link>
-            <Link
-              href="/signup"
-              className="text-sm font-campton font-medium bg-[#FF7C36] hover:bg-[#FF6B1F] text-white px-5 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer active:scale-95"
-            >
-              Sign Up
-            </Link>
+            {mounted && isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="text-sm font-campton font-medium bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white px-5 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer"
+              >
+                Log Out
+              </button>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-sm font-campton font-medium text-[#222021] hover:text-[#FF7C36] active:text-[#FF6B1F] transition-colors cursor-pointer"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/signup"
+                  className="text-sm font-campton font-medium bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white px-5 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -109,20 +139,34 @@ const Header = () => {
                 </Link>
               ))}
               <div className="border-t border-gray-100 mt-2 pt-2 px-6 flex flex-col gap-3 pb-4">
-                <Link
-                  href="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-center py-2.5 text-base font-medium font-campton text-[#222021] hover:text-[#FF7C36] transition-colors"
-                >
-                  Log In
-                </Link>
-                <Link
-                  href="/signup"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block text-center py-3 text-base font-medium font-campton bg-[#FF7C36] hover:bg-[#FF6B1F] text-white rounded-lg transition-colors cursor-pointer active:scale-95"
-                >
-                  Sign Up
-                </Link>
+                {mounted && isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block text-center py-3 text-base font-medium font-campton bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white rounded-lg transition-colors cursor-pointer"
+                  >
+                    Log Out
+                  </button>
+                ) : (
+                  <>
+                    <Link
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block text-center py-2.5 text-base font-medium font-campton text-[#222021] hover:text-[#FF7C36] active:text-[#FF6B1F] transition-colors"
+                    >
+                      Log In
+                    </Link>
+                    <Link
+                      href="/signup"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block text-center py-3 text-base font-medium font-campton bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white rounded-lg transition-colors cursor-pointer"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
           </nav>
