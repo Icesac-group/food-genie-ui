@@ -46,17 +46,18 @@ const AddressStep = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState({
-    additionalDetails: "",
-    streetAddress: "",
+    address: "",
+    city: "",
+    province: "",
+    postalCode: "",
     apartmentUnit: "",
-    buildingName: "",
     buzzerCode: "",
+    additionalDetails: "",
     businessName: "",
     suiteFloorNumber: "",
     hotelName: "",
     roomFloorNumber: "",
     appSuiteFloor: "",
-    businessBuildingName: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -83,10 +84,16 @@ const AddressStep = () => {
   const validateDelivery = () => {
     const e: Record<string, string> = {};
     if (!apartmentType) e.apartmentType = "Please select an address type";
-    if (apartmentType === "house" && !formData.streetAddress) e.streetAddress = "Street address is required";
+    
+    // Global fields
+    if (!formData.address) e.address = "Address is required";
+    if (!formData.city) e.city = "City is required";
+    if (!formData.province) e.province = "Province is required";
+    if (!formData.postalCode) e.postalCode = "Postal Code is required";
+
+    // Specific fields
     if (apartmentType === "apartment") {
       if (!formData.apartmentUnit) e.apartmentUnit = "Apartment unit is required";
-      if (!formData.buildingName) e.buildingName = "Building name is required";
       if (!formData.buzzerCode) e.buzzerCode = "Buzzer code is required";
     }
     if (apartmentType === "office") {
@@ -99,7 +106,6 @@ const AddressStep = () => {
     }
     if (apartmentType === "other") {
       if (!formData.appSuiteFloor) e.appSuiteFloor = "App/Suite/Floor number is required";
-      if (!formData.businessBuildingName) e.businessBuildingName = "Business/Building name is required";
     }
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -175,7 +181,7 @@ const AddressStep = () => {
               Pickup
             </p>
             <p className="font-campton text-[#868686] text-xs text-center">
-              Pick up — no delivery fee
+              Pick up &mdash; no delivery fee
             </p>
             {fulfillmentMethod === "pickup" && (
               <span className="mt-1 bg-[#FF7C36] text-white text-xs font-campton px-2 py-0.5 rounded-full">Selected</span>
@@ -206,113 +212,139 @@ const AddressStep = () => {
               {errors.apartmentType && <p className="text-red-500 text-xs mt-1 font-campton">{errors.apartmentType}</p>}
             </div>
 
-            {/* House */}
-            {apartmentType === "house" && (
-              <>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Additional Details</Label>
-                  <Input placeholder="Enter house number or name" value={formData.additionalDetails} onChange={(e) => handleInputChange("additionalDetails", e.target.value)} className="font-campton" />
-                </div>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Street Address*</Label>
-                  <Input placeholder="Enter street address" value={formData.streetAddress} onChange={(e) => handleInputChange("streetAddress", e.target.value)} className={`font-campton ${errors.streetAddress ? "border-red-500" : ""}`} />
-                  {errors.streetAddress && <p className="text-red-500 text-xs mt-1 font-campton">{errors.streetAddress}</p>}
-                </div>
-              </>
-            )}
-
-            {/* Apartment */}
-            {apartmentType === "apartment" && (
-              <>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Apartment Unit / Floor*</Label>
-                  <Input placeholder="E.g 1208" value={formData.apartmentUnit} onChange={(e) => handleInputChange("apartmentUnit", e.target.value)} className={`font-campton ${errors.apartmentUnit ? "border-red-500" : ""}`} />
-                  {errors.apartmentUnit && <p className="text-red-500 text-xs mt-1 font-campton">{errors.apartmentUnit}</p>}
-                </div>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Building Name*</Label>
-                  <Input placeholder="E.g. Central Tower" value={formData.buildingName} onChange={(e) => handleInputChange("buildingName", e.target.value)} className={`font-campton ${errors.buildingName ? "border-red-500" : ""}`} />
-                  {errors.buildingName && <p className="text-red-500 text-xs mt-1 font-campton">{errors.buildingName}</p>}
-                </div>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Buzzer Code*</Label>
-                  <Input placeholder="E.g 1208#" value={formData.buzzerCode} onChange={(e) => handleInputChange("buzzerCode", e.target.value)} className={`font-campton ${errors.buzzerCode ? "border-red-500" : ""}`} />
-                  {errors.buzzerCode && <p className="text-red-500 text-xs mt-1 font-campton">{errors.buzzerCode}</p>}
-                </div>
-              </>
-            )}
-
-            {/* Office */}
-            {apartmentType === "office" && (
-              <>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Business Name*</Label>
-                  <Input placeholder="Enter business name" value={formData.businessName} onChange={(e) => handleInputChange("businessName", e.target.value)} className={`font-campton ${errors.businessName ? "border-red-500" : ""}`} />
-                  {errors.businessName && <p className="text-red-500 text-xs mt-1 font-campton">{errors.businessName}</p>}
-                </div>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Suite / Floor Number*</Label>
-                  <Input placeholder="Enter suite / floor number" value={formData.suiteFloorNumber} onChange={(e) => handleInputChange("suiteFloorNumber", e.target.value)} className={`font-campton ${errors.suiteFloorNumber ? "border-red-500" : ""}`} />
-                  {errors.suiteFloorNumber && <p className="text-red-500 text-xs mt-1 font-campton">{errors.suiteFloorNumber}</p>}
-                </div>
-              </>
-            )}
-
-            {/* Hotel */}
-            {apartmentType === "hotel" && (
-              <>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Hotel Name*</Label>
-                  <Input placeholder="Enter hotel name" value={formData.hotelName} onChange={(e) => handleInputChange("hotelName", e.target.value)} className={`font-campton ${errors.hotelName ? "border-red-500" : ""}`} />
-                  {errors.hotelName && <p className="text-red-500 text-xs mt-1 font-campton">{errors.hotelName}</p>}
-                </div>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Room / Floor Number*</Label>
-                  <Input placeholder="Enter room / floor number" value={formData.roomFloorNumber} onChange={(e) => handleInputChange("roomFloorNumber", e.target.value)} className={`font-campton ${errors.roomFloorNumber ? "border-red-500" : ""}`} />
-                  {errors.roomFloorNumber && <p className="text-red-500 text-xs mt-1 font-campton">{errors.roomFloorNumber}</p>}
-                </div>
-              </>
-            )}
-
-            {/* Other */}
-            {apartmentType === "other" && (
-              <>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">App / Suite / Floor*</Label>
-                  <Input placeholder="Enter app / suite / floor" value={formData.appSuiteFloor} onChange={(e) => handleInputChange("appSuiteFloor", e.target.value)} className={`font-campton ${errors.appSuiteFloor ? "border-red-500" : ""}`} />
-                  {errors.appSuiteFloor && <p className="text-red-500 text-xs mt-1 font-campton">{errors.appSuiteFloor}</p>}
-                </div>
-                <div>
-                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Business / Building Name*</Label>
-                  <Input placeholder="Enter business / building name" value={formData.businessBuildingName} onChange={(e) => handleInputChange("businessBuildingName", e.target.value)} className={`font-campton ${errors.businessBuildingName ? "border-red-500" : ""}`} />
-                  {errors.businessBuildingName && <p className="text-red-500 text-xs mt-1 font-campton">{errors.businessBuildingName}</p>}
-                </div>
-              </>
-            )}
-
-            {/* Dropoff options */}
             {apartmentType && (
-              <div className="pt-2">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="font-campton text-[#222021] text-sm font-semibold">Dropoff Options</p>
-                  <button onClick={() => setIsDropoffModalOpen(true)} className="font-campton text-[#FF7C36] text-xs hover:text-[#FF6B1F] hover:underline active:text-[#FF5500] min-h-[36px]">+ Add dropoff option</button>
+              <>
+                {/* Global Address Field */}
+                <div>
+                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Address*</Label>
+                  <Input placeholder="Enter street address" value={formData.address} onChange={(e) => handleInputChange("address", e.target.value)} className={`font-campton ${errors.address ? "border-red-500" : ""}`} />
+                  {errors.address && <p className="text-red-500 text-xs mt-1 font-campton">{errors.address}</p>}
                 </div>
-                {dropoffOptions.length > 0 && (
-                  <div className="space-y-2">
-                    {dropoffOptions.map((opt) => (
-                      <div key={opt.id} className="flex items-center justify-between p-3 bg-[#F9F9F9] rounded-lg">
-                        <div>
-                          <p className="font-campton text-[#222021] text-xs font-medium">{opt.option}</p>
-                          <p className="font-campton text-[#868686] text-xs">{opt.instructions}</p>
-                        </div>
-                        <button onClick={() => handleDeleteDropoff(opt.id)} className="text-[#868686] hover:text-red-400">
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    ))}
+                
+                {/* House */}
+                {apartmentType === "house" && (
+                  <div>
+                    <Label className="font-campton text-[#868686] text-sm mb-2 block">Additional Details</Label>
+                    <Input placeholder="Enter house number or name" value={formData.additionalDetails} onChange={(e) => handleInputChange("additionalDetails", e.target.value)} className="font-campton" />
                   </div>
                 )}
-              </div>
+
+                {/* Apartment */}
+                {apartmentType === "apartment" && (
+                  <>
+                    <div>
+                      <Label className="font-campton text-[#868686] text-sm mb-2 block">Apartment Unit / Floor*</Label>
+                      <Input placeholder="E.g 1208" value={formData.apartmentUnit} onChange={(e) => handleInputChange("apartmentUnit", e.target.value)} className={`font-campton ${errors.apartmentUnit ? "border-red-500" : ""}`} />
+                      {errors.apartmentUnit && <p className="text-red-500 text-xs mt-1 font-campton">{errors.apartmentUnit}</p>}
+                    </div>
+                    <div>
+                      <Label className="font-campton text-[#868686] text-sm mb-2 block">Buzzer Code*</Label>
+                      <Input placeholder="E.g 1208#" value={formData.buzzerCode} onChange={(e) => handleInputChange("buzzerCode", e.target.value)} className={`font-campton ${errors.buzzerCode ? "border-red-500" : ""}`} />
+                      {errors.buzzerCode && <p className="text-red-500 text-xs mt-1 font-campton">{errors.buzzerCode}</p>}
+                    </div>
+                  </>
+                )}
+
+                {/* Office */}
+                {apartmentType === "office" && (
+                  <>
+                    <div>
+                      <Label className="font-campton text-[#868686] text-sm mb-2 block">Business Name*</Label>
+                      <Input placeholder="Enter business name" value={formData.businessName} onChange={(e) => handleInputChange("businessName", e.target.value)} className={`font-campton ${errors.businessName ? "border-red-500" : ""}`} />
+                      {errors.businessName && <p className="text-red-500 text-xs mt-1 font-campton">{errors.businessName}</p>}
+                    </div>
+                    <div>
+                      <Label className="font-campton text-[#868686] text-sm mb-2 block">Suite / Floor Number*</Label>
+                      <Input placeholder="Enter suite / floor number" value={formData.suiteFloorNumber} onChange={(e) => handleInputChange("suiteFloorNumber", e.target.value)} className={`font-campton ${errors.suiteFloorNumber ? "border-red-500" : ""}`} />
+                      {errors.suiteFloorNumber && <p className="text-red-500 text-xs mt-1 font-campton">{errors.suiteFloorNumber}</p>}
+                    </div>
+                  </>
+                )}
+
+                {/* Hotel */}
+                {apartmentType === "hotel" && (
+                  <>
+                    <div>
+                      <Label className="font-campton text-[#868686] text-sm mb-2 block">Hotel Name*</Label>
+                      <Input placeholder="Enter hotel name" value={formData.hotelName} onChange={(e) => handleInputChange("hotelName", e.target.value)} className={`font-campton ${errors.hotelName ? "border-red-500" : ""}`} />
+                      {errors.hotelName && <p className="text-red-500 text-xs mt-1 font-campton">{errors.hotelName}</p>}
+                    </div>
+                    <div>
+                      <Label className="font-campton text-[#868686] text-sm mb-2 block">Room / Floor Number*</Label>
+                      <Input placeholder="Enter room / floor number" value={formData.roomFloorNumber} onChange={(e) => handleInputChange("roomFloorNumber", e.target.value)} className={`font-campton ${errors.roomFloorNumber ? "border-red-500" : ""}`} />
+                      {errors.roomFloorNumber && <p className="text-red-500 text-xs mt-1 font-campton">{errors.roomFloorNumber}</p>}
+                    </div>
+                  </>
+                )}
+
+                {/* Other */}
+                {apartmentType === "other" && (
+                  <div>
+                    <Label className="font-campton text-[#868686] text-sm mb-2 block">App / Suite / Floor*</Label>
+                    <Input placeholder="Enter app / suite / floor" value={formData.appSuiteFloor} onChange={(e) => handleInputChange("appSuiteFloor", e.target.value)} className={`font-campton ${errors.appSuiteFloor ? "border-red-500" : ""}`} />
+                    {errors.appSuiteFloor && <p className="text-red-500 text-xs mt-1 font-campton">{errors.appSuiteFloor}</p>}
+                  </div>
+                )}
+
+                {/* Global City, Province, Postal Code */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-campton text-[#868686] text-sm mb-2 block">City*</Label>
+                    <Input placeholder="Enter city" value={formData.city} onChange={(e) => handleInputChange("city", e.target.value)} className={`font-campton ${errors.city ? "border-red-500" : ""}`} />
+                    {errors.city && <p className="text-red-500 text-xs mt-1 font-campton">{errors.city}</p>}
+                  </div>
+                  <div>
+                    <Label className="font-campton text-[#868686] text-sm mb-2 block">Province*</Label>
+                    <Select value={formData.province} onValueChange={(v) => handleInputChange("province", v)}>
+                      <SelectTrigger className={`font-campton ${errors.province ? "border-red-500" : ""}`}>
+                        <SelectValue placeholder="Select province" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="AB">Alberta</SelectItem>
+                        <SelectItem value="BC">British Columbia</SelectItem>
+                        <SelectItem value="MB">Manitoba</SelectItem>
+                        <SelectItem value="NB">New Brunswick</SelectItem>
+                        <SelectItem value="NL">Newfoundland and Labrador</SelectItem>
+                        <SelectItem value="NS">Nova Scotia</SelectItem>
+                        <SelectItem value="ON">Ontario</SelectItem>
+                        <SelectItem value="PE">Prince Edward Island</SelectItem>
+                        <SelectItem value="QC">Quebec</SelectItem>
+                        <SelectItem value="SK">Saskatchewan</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.province && <p className="text-red-500 text-xs mt-1 font-campton">{errors.province}</p>}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="font-campton text-[#868686] text-sm mb-2 block">Postal Code*</Label>
+                  <Input placeholder="e.g. M1A 1A1" value={formData.postalCode} onChange={(e) => handleInputChange("postalCode", e.target.value)} className={`font-campton uppercase ${errors.postalCode ? "border-red-500" : ""}`} />
+                  {errors.postalCode && <p className="text-red-500 text-xs mt-1 font-campton">{errors.postalCode}</p>}
+                </div>
+
+                {/* Dropoff options */}
+                <div className="pt-2 border-t border-gray-100 mt-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="font-campton text-[#222021] text-sm font-semibold">Dropoff Options</p>
+                    <button onClick={() => setIsDropoffModalOpen(true)} className="font-campton text-[#FF7C36] text-xs hover:text-[#FF6B1F] hover:underline active:text-[#FF5500] min-h-[36px]">+ Add dropoff option</button>
+                  </div>
+                  {dropoffOptions.length > 0 && (
+                    <div className="space-y-2">
+                      {dropoffOptions.map((opt) => (
+                        <div key={opt.id} className="flex items-center justify-between p-3 bg-[#F9F9F9] rounded-lg">
+                          <div>
+                            <p className="font-campton text-[#222021] text-xs font-medium">{opt.option}</p>
+                            <p className="font-campton text-[#868686] text-xs">{opt.instructions}</p>
+                          </div>
+                          <button onClick={() => handleDeleteDropoff(opt.id)} className="text-[#868686] hover:text-red-400">
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </>
             )}
           </div>
         )}

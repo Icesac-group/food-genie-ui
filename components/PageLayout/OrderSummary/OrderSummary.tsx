@@ -333,15 +333,20 @@ const OrderSummary = ({ showCheckoutButton = true }: OrderSummaryProps) => {
                     <div className="flex items-start justify-between mb-3">
                       <div>
                         <p className="font-campton text-[#222021] text-sm font-semibold mb-1">
-                          {selectedAddress.apartmentType}
+                          {selectedAddress.address}
+                        </p>
+                        <p className="font-campton text-[#868686] text-xs mb-1">
+                          {selectedAddress.apartmentType} 
+                          {selectedAddress.apartmentUnit && ` - Unit ${selectedAddress.apartmentUnit}`}
                         </p>
                         <p className="font-campton text-[#868686] text-xs">
-                          {selectedAddress.apartmentUnit},{" "}
-                          {selectedAddress.buildingName}
+                          {selectedAddress.city}, {selectedAddress.province} {selectedAddress.postalCode}
                         </p>
-                        <p className="font-campton text-[#868686] text-xs">
-                          Buzzer: {selectedAddress.buzzerCode}
-                        </p>
+                        {selectedAddress.buzzerCode && (
+                          <p className="font-campton text-[#868686] text-xs mt-1">
+                            Buzzer: {selectedAddress.buzzerCode}
+                          </p>
+                        )}
                       </div>
                       <button
                         onClick={() => handleOpenModal(true)}

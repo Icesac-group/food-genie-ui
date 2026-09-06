@@ -11,9 +11,18 @@ export interface DropoffOption {
 export interface DeliveryAddress {
   id: string;
   apartmentType: string;
-  apartmentUnit: string;
-  buildingName: string;
-  buzzerCode: string;
+  address: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  apartmentUnit?: string;
+  buzzerCode?: string;
+  additionalDetails?: string;
+  businessName?: string;
+  suiteFloorNumber?: string;
+  hotelName?: string;
+  roomFloorNumber?: string;
+  appSuiteFloor?: string;
   dropoffOptions: DropoffOption[];
   createdAt: Date;
 }

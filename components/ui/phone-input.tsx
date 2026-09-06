@@ -11,12 +11,7 @@ interface PhoneInputProps {
 }
 
 const countryCodes = [
-  { code: "+234", country: "NG", flag: "🇳🇬" },
-  { code: "+1", country: "US", flag: "🇺🇸" },
-  { code: "+44", country: "GB", flag: "🇬🇧" },
-  { code: "+27", country: "ZA", flag: "🇿🇦" },
-  { code: "+254", country: "KE", flag: "🇰🇪" },
-  { code: "+233", country: "GH", flag: "🇬🇭" },
+  { code: "+1", country: "CA", flag: "🇨🇦" },
 ];
 
 export function PhoneInput({

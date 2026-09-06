@@ -284,9 +284,9 @@ const CheckoutModal = ({ open, onOpenChange }: CheckoutModalProps) => {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-campton text-[#222021] text-sm font-medium">
-                      {selectedAddress.apartmentUnit},{" "}
-                      {selectedAddress.buildingName}
+                    <p className="font-campton text-[#868686] text-xs">
+                      {selectedAddress.apartmentUnit && `${selectedAddress.apartmentUnit}, `}
+                      {selectedAddress.address}
                     </p>
                   </div>
                 </div>
