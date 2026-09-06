@@ -11,7 +11,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
 
   const checkAuthStatus = () => {
@@ -24,20 +23,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Check auth status on mount and on route changes
   useEffect(() => {
     checkAuthStatus();
-    setMounted(true);
   }, []);
 
   // Re-check auth when pathname changes (page navigation)
   useEffect(() => {
-    if (mounted) {
-      checkAuthStatus();
-    }
-  }, [pathname, mounted]);
+    checkAuthStatus();
+  }, [pathname]);
 
   // Check every time the page becomes visible (tab switch)
   useEffect(() => {
-    if (!mounted) return;
-
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         checkAuthStatus();
@@ -47,7 +41,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     document.addEventListener("visibilitychange", handleVisibilityChange);
     return () =>
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-  }, [mounted]);
+  }, []);
 
   const logout = () => {
     document.cookie =
@@ -56,11 +50,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
     setIsAuthenticated(false);
   };
-
-  // Only render after hydration to avoid mismatch
-  if (!mounted) {
-    return <>{children}</>;
-  }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, logout }}>
@@ -76,3 +65,4 @@ export function useAuth() {
   }
   return context;
 }
+
