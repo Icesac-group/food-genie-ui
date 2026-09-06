@@ -1,6 +1,5 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -11,7 +10,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const pathname = usePathname();
 
   const checkAuthStatus = () => {
     const hasToken = document.cookie
@@ -20,18 +18,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsAuthenticated(hasToken);
   };
 
-  // Check auth status on mount and on route changes
+  // Check auth status on initial mount
   useEffect(() => {
     checkAuthStatus();
-  }, []);
 
-  // Re-check auth when pathname changes (page navigation)
-  useEffect(() => {
-    checkAuthStatus();
-  }, [pathname]);
-
-  // Check every time the page becomes visible (tab switch)
-  useEffect(() => {
+    // Also check every time the page becomes visible (tab switch)
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
         checkAuthStatus();
@@ -39,8 +30,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    return () =>
+
+    // Also poll every second to catch auth changes from other tabs or redirects
+    const interval = setInterval(() => {
+      checkAuthStatus();
+    }, 1000);
+
+    return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
+      clearInterval(interval);
+    };
   }, []);
 
   const logout = () => {
