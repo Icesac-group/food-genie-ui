@@ -1,4 +1,5 @@
 "use client";
+"use client";
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,12 +30,38 @@ export default function SignupPage() {
     }
     
     setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // TODO: Replace with actual API call to your backend
+      // const response = await fetch('/api/signup', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ firstName, lastName, email, password })
+      // });
+      // const data = await response.json();
+      // if (data.accessToken) {
+      //   document.cookie = `accessToken=${data.accessToken}; path=/; max-age=86400`;
+      // }
+
+      // Simulate API call for now - set a mock token
+      setTimeout(() => {
+        // Set accessToken cookie (mock token for testing)
+        document.cookie = "accessToken=mock_token_12345; path=/; max-age=86400";
+        
+        // Optional: set refreshToken
+        document.cookie = "refreshToken=mock_refresh_67890; path=/; max-age=604800";
+        
+        setIsLoading(false);
+        toast.success("Account created successfully!");
+        
+        // Give the header time to detect the cookie
+        setTimeout(() => {
+          router.push("/home");
+        }, 200);
+      }, 1500);
+    } catch (error) {
       setIsLoading(false);
-      toast.success("Account created successfully!");
-      router.push("/home"); // Redirect after signup
-    }, 1500);
+      toast.error("Signup failed. Please try again.");
+    }
   };
 
   return (
