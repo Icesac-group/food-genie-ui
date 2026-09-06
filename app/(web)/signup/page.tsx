@@ -53,10 +53,8 @@ export default function SignupPage() {
         setIsLoading(false);
         toast.success("Account created successfully!");
         
-        // Give the header time to detect the cookie
-        setTimeout(() => {
-          router.push("/home");
-        }, 200);
+        // Redirect to home - AuthContext will detect the cookie
+        router.push("/home");
       }, 1500);
     } catch (error) {
       setIsLoading(false);

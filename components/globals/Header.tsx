@@ -1,51 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { images } from "@/public/images/images";
+import { useAuth } from "@/lib/context/AuthContext";
 import { Menu, X } from "lucide-react";
 
 const Header = () => {
   const { logo } = images();
   const pathname = usePathname();
   const router = useRouter();
+  const { isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Check if user is authenticated by looking for accessToken cookie
-  useEffect(() => {
-    const hasAccessToken = document.cookie
-      .split("; ")
-      .some((row) => row.startsWith("accessToken="));
-    setIsAuthenticated(hasAccessToken);
-    setMounted(true);
-  }, []);
-
-  // Listen for auth state changes (cookie updates)
-  useEffect(() => {
-    if (!mounted) return;
-
-    const checkAuthStatus = (): boolean => {
-      return document.cookie
-        .split("; ")
-        .some((row) => row.startsWith("accessToken="));
-    };
-
-    // Poll cookie every 500ms for changes (detects login from other tabs)
-    const interval = setInterval(() => {
-      const currentAuthStatus = checkAuthStatus();
-      setIsAuthenticated((prev) => {
-        if (prev !== currentAuthStatus) {
-          return currentAuthStatus;
-        }
-        return prev;
-      });
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [mounted]);
 
   const navItems = [
     { name: "Home", href: "/home" },
@@ -58,23 +25,10 @@ const Header = () => {
     return pathname === href;
   };
 
-  const handleLogout = async () => {
-    // Clear the accessToken cookie
-    document.cookie =
-      "accessToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-
-    // Clear refreshToken if it exists
-    document.cookie =
-      "refreshToken=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-
-    // Update state immediately
-    setIsAuthenticated(false);
+  const handleLogout = () => {
+    logout();
     setMobileMenuOpen(false);
-
-    // Small delay to ensure cookies are cleared, then redirect to login
-    setTimeout(() => {
-      router.push("/login");
-    }, 100);
+    router.push("/login");
   };
 
   return (
@@ -113,7 +67,7 @@ const Header = () => {
 
           {/* Auth Buttons */}
           <div className="hidden sm:flex items-center gap-4">
-            {mounted && isAuthenticated ? (
+            {isAuthenticated ? (
               <button
                 onClick={handleLogout}
                 className="text-sm font-campton font-medium bg-[#FF7C36] hover:bg-[#FF6B1F] active:bg-[#FF5500] text-white px-5 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer"
@@ -175,7 +129,7 @@ const Header = () => {
                 </Link>
               ))}
               <div className="border-t border-gray-100 mt-2 pt-2 px-6 flex flex-col gap-3 pb-4">
-                {mounted && isAuthenticated ? (
+                {isAuthenticated ? (
                   <button
                     onClick={() => {
                       handleLogout();
