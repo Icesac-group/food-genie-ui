@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import Header from "@/components/globals/Header";
 import Footer from "@/components/globals/Footer";
